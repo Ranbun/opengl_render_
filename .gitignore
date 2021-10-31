@@ -1,9 +1,9 @@
 
 # 忽略 目录
 opengl_render_/build
-opengl_render_/build/
+opengl_render_/build/*
 opengl_render_/.vs
-opengl_render_/.vs/
+opengl_render_/.vs/*
 
 # opengl_render_/build/.vs/opengl_render_/project-colors.json
 # opengl_render_/build/.vs/opengl_render_/v17/.suo
