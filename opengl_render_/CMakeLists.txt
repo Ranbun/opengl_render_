@@ -12,9 +12,10 @@ set(CMAKE_CXX_STANDARD 14)
 SET(LIB_PATH ${CMAKE_SOURCE_DIR}/../3rdpart/x64-windows)
 
 
-SET(Headers callbackfunction.h renderwidget.h renderbase.h  shader.h vertexarraybufferobject.h bufferobject.h render_en.h) 
+SET(Headers callbackfunction.h renderwidget.h renderbase.h  shader.h vertexarraybufferobject.h bufferobject.h render_en.h openg_texture.h) 
 
-SET(Sources main.cpp callbackfunction.cpp renderwidget.cpp renderbase.cpp  shader.cpp vertexarraybufferobject.cpp bufferobject.cpp)
+SET(Sources main.cpp callbackfunction.cpp renderwidget.cpp renderbase.cpp  shader.cpp vertexarraybufferobject.cpp bufferobject.cpp openg_texture.cpp
+stb_image.cpp)
 
 SET(shader_file shader/triangle.vert shader/triangle.frag)
 
@@ -40,7 +41,6 @@ TARGET_INCLUDE_DIRECTORIES(
 	${project_name}
 	PRIVATE
 		${LIB_PATH}/include
-		# ${LIB_PATH}/bin
 )
 
 
