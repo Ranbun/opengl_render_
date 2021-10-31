@@ -31,4 +31,21 @@ namespace object_buffer
 };
 
 
+namespace texture
+{
+	enum class WRAP
+	{
+		S,
+		T,
+		R
+	};
+
+	enum class FILETER
+	{
+		MIN,
+		MAG
+	};
+}
+
+
 #endif 
