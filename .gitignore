@@ -15,3 +15,7 @@ opengl_render_/out/*
 # opengl_render_/build/.vs/opengl_render_/v17/Preview/Browse.VC.db
 # opengl_render_/build/.vs/opengl_render_/v17/Preview/ipch/AutoPCH/48297057a7ea3c81/OPENG_TEXTURE.ipch
 # opengl_render_/build/.vs/opengl_render_/v17/Preview/Solution.VC.db
+3rdpart/x64-windows/share/vcpkg-cmake/cmake_get_vars/out/build/x64-Debug/CMakeFiles/cmake.check_cache
+3rdpart/x64-windows/share/vcpkg-cmake/cmake_get_vars/out/build/x64-Debug/.cmake/api/v1/query/client-MicrosoftVS/query.json
+3rdpart/x64-windows/share/vcpkg-cmake/cmake_get_vars/out/build/x64-Debug/CMakeCache.txt
+3rdpart/x64-windows/share/vcpkg-cmake/cmake_get_vars/out/build/x64-Debug/VSInheritEnvironments.txt
