@@ -4,8 +4,8 @@ opengl_render_/build
 opengl_render_/build/*
 opengl_render_/.vs
 opengl_render_/.vs/*
-./.vs
-./.vs/*
+.vs
+.vs/*
 opengl_render_/out
 opengl_render_/out/*
 
