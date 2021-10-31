@@ -8,7 +8,7 @@
 
 namespace object_buffer
 {
-	enum class OBJECT_TYPE
+	enum class OBJECT_TYPE		
 	{
 		VERTEX_BUFFER,
 		INDEX_BUFFER

@@ -58,19 +58,19 @@ void Texture::createTexture()
 	data_ = nullptr;
 }
 
-void Texture::setWarpParameteri(const texture::WRAP wrap, unsigned type)
+void Texture::setWarpParameteri(const texture::WRAP wrap, unsigned int type)
 {
-	if(wrap == texture::WRAP::S)
+	if (wrap == texture::WRAP::S)
 	{
 		wrap_s_ = type;
 	}
-	else
+	else if (wrap == texture::WRAP::T)
 	{
 		wrap_t_ = type;
 	}
 }
 
-void Texture::setFilterParameteri(texture::FILETER filter, unsigned type)
+void Texture::setFilterParameteri(texture::FILETER filter, unsigned int type)
 {
 	if (filter == texture::FILETER::MIN)
 	{

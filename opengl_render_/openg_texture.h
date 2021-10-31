@@ -8,34 +8,6 @@
 #include "render_en.h"
 #include "stb_image.h"
 
-
-#if 0
-glGenTextures(1, &texture_);
-glBindTexture(GL_TEXTURE_2D, texture_);
-
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-int width, height, nr_channels;
-unsigned char* data = stbi_load("./container.jpg", &width, &height, &nr_channels, 0);
-
-if (data)
-{
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-}
-else
-{
-	std::cout << "Failed to load texture" << std::endl;
-}
-
-stbi_image_free(data);
-
-#endif 
-
 class Texture
 {
 public:
@@ -43,32 +15,39 @@ public:
 
 	~Texture();
 
-
+	// bind 
 	void bindTexture() const;
 
+	//create 
 	void createTexture();
 
+	// set wrap & filter
 	void setWarpParameteri(const texture::WRAP wrap, unsigned int type);
 	void setFilterParameteri(texture::FILETER filter, unsigned int type);
 
+	// release
 	void releaseTexture();
 
 
 private:
 	
+	// 紋理的的图片信息
 	int width_;
 	int height_;
+	// 通道信息 
 	int nr_channels_;
+	// 调用create之前暂存的 图像数据 
 	unsigned char* data_;  //暂存 像素的数据
 
+	// wrap 
 	GLuint wrap_s_;
 	GLuint wrap_t_;
 
+	// filter 
 	GLuint filter_min_;
 	GLuint filter_mag_;
 
-
-
+	// texture ID  
 	unsigned int texture_id_;
 
 };
