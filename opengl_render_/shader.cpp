@@ -1,4 +1,5 @@
 #include "shader.h"
+#include <glm/gtc/type_ptr.hpp>
 
 
 Shader::Shader(const char* vertex_path, const char* fragment_path, const char* geometry_path)
@@ -164,10 +165,14 @@ void Shader::setMat2(const std::string& name, glm::mat2& value) const
 
 void Shader::setMat3(const std::string& name, glm::mat3& value) const
 {
+	unsigned int location = glGetUniformLocation(program_, name.c_str());
+	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 void Shader::setMat4(const std::string& name, glm::mat4& value) const
 {
+	unsigned int location = glGetUniformLocation(program_, name.c_str());
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 void Shader::checkCompileErrors(const unsigned shader, const SHADER_TYPE type)
