@@ -6,16 +6,22 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "callbackfunction.h"
+//#include "callbackfunction.h"
 #include "renderbase.h"
 
 class RenderWidget
 {
-public:
+	friend void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+	friend void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+
+protected:
 	RenderWidget(const int width, const int height, std::string title);
 	~RenderWidget();
+public:
 	// 设置更新回调函数
 	void setFrameBufferSizeCallback() const;
+	void setMousePosCallback() const;
+	void setScrollCallback() const;
 
 	void setRenderObject(RenderBase* object);
 
@@ -24,13 +30,28 @@ public:
 	GLFWwindow* getWindow() const;
 	virtual void run();
 
-private:
+	static RenderWidget* get()
+	{
+		static RenderWidget* ob = new RenderWidget(800, 600, "OPenGL Widget");
+		return  ob;
+	}
+
+protected:
 	//渲染窗口 
 	GLFWwindow* window_;
 	RenderBase* render_;
 
+	// 计算delta Time 
+	float delta_time_ = 0.0f;  // 当前帧与上一帧的时间差
+	float last_frame_ = 0.0f;  // 上一帧的时间 
+
+	bool first_mouse_;  // default true
+	float last_x_;
+	float last_y_;
+
 protected:
 	void processInput() const;
+
 };
 
 

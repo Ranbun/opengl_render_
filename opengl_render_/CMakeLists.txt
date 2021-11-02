@@ -1,4 +1,4 @@
-set(project_name opengl_render_)
+set(project_name Transformations)
 # 设置工程名称 
 project(${project_name})
 
@@ -12,12 +12,35 @@ set(CMAKE_CXX_STANDARD 14)
 SET(LIB_PATH ${CMAKE_SOURCE_DIR}/../3rdpart/x64-windows)
 
 
-SET(Headers callbackfunction.h renderwidget.h renderbase.h  shader.h vertexarraybufferobject.h bufferobject.h render_en.h openg_texture.h) 
+SET(Headers 
+	callbackfunction.h 
+	renderwidget.h 
+	renderbase.h  
+	shader.h 
+	vertexarraybufferobject.h 
+	bufferobject.h 
+	render_en.h 
+	openg_texture.h 
+	camera.h
+) 
 
-SET(Sources main.cpp callbackfunction.cpp renderwidget.cpp renderbase.cpp  shader.cpp vertexarraybufferobject.cpp bufferobject.cpp openg_texture.cpp
-stb_image.cpp)
+SET(Sources 
+	main.cpp 
+	callbackfunction.cpp 
+	renderwidget.cpp 
+	renderbase.cpp  
+	shader.cpp 
+	vertexarraybufferobject.cpp 
+	bufferobject.cpp 
+	openg_texture.cpp
+	stb_image.cpp 
+	camera.cpp
+)
 
-SET(shader_file shader/triangle.vert shader/triangle.frag)
+SET(shader_file 
+	# shader/transformations.vert 
+	# shader/transformations.frag
+)
 
 
 # 将头文件和源文件 整理到对应的文件夹中 
@@ -25,6 +48,8 @@ SOURCE_GROUP("Headers Files" FILES ${Headers})
 SOURCE_GROUP("Sources Files" FILES ${Sources})
 SOURCE_GROUP("Resource Files" FILES ${shader_file})
 
+# 屏蔽掉额外的控制台 
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 add_executable(${project_name} ${Headers} ${Sources} ${shader_file})
 
 

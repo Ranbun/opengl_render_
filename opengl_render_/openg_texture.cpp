@@ -86,3 +86,10 @@ void Texture::releaseTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+// ·­×ªÍ¼Ïñ
+void Texture::flipVerticallyImage()
+{
+	stbi_set_flip_vertically_on_load(true);
+
+}

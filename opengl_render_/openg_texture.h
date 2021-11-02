@@ -28,6 +28,8 @@ public:
 	// release
 	void releaseTexture();
 
+	// ·­×ªÍ¼Ïñ
+	static void flipVerticallyImage();
 
 private:
 	

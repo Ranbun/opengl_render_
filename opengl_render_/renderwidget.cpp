@@ -22,6 +22,9 @@ RenderWidget::RenderWidget(const int width, const int height, std::string title)
 	}
 	// 初始化视口大小 
 	glViewport(0, 0, 800, 600);
+	first_mouse_ = true;
+	last_x_ = width / 2;
+	last_y_ = height / 2;
 	
 }
 
@@ -32,7 +35,17 @@ RenderWidget::~RenderWidget()
 
 void RenderWidget::setFrameBufferSizeCallback() const
 {
-	glfwSetFramebufferSizeCallback(window_, frameBufferSizeCallBack);
+	//glfwSetFramebufferSizeCallback(window_, frameBufferSizeCallBack);
+}
+
+void RenderWidget::setMousePosCallback() const
+{
+	//glfwSetCursorPosCallback(window_, mouseCallback);
+}
+
+void RenderWidget::setScrollCallback() const
+{
+	//glfwSetScrollCallback(window_, scrollCallback);
 }
 
 void RenderWidget::setRenderObject(RenderBase* object)
@@ -64,6 +77,10 @@ void RenderWidget::run()
 	assert(render_);
 	while (!glfwWindowShouldClose(window_))
 	{
+		float current_frame = glfwGetTime();
+		delta_time_ = current_frame - last_frame_;
+		last_frame_ = current_frame;
+
 		// 获取输入
 		processInput();
 
@@ -83,4 +100,16 @@ void RenderWidget::processInput() const
 	{
 		glfwSetWindowShouldClose(window_, true);
 	}
+
+	if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS)
+		render_->currentCamera()->processKeyBoard(camera::Camera_Movement::FORWARD, delta_time_);
+	if (glfwGetKey(window_, GLFW_KEY_S) == GLFW_PRESS)
+		render_->currentCamera()->processKeyBoard(camera::Camera_Movement::BACKWARD, delta_time_);
+	if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS)
+		render_->currentCamera()->processKeyBoard(camera::Camera_Movement::LEFT, delta_time_);
+	if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS)
+		render_->currentCamera()->processKeyBoard(camera::Camera_Movement::RIGHT, delta_time_);
+
 }
+
+
