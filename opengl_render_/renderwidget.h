@@ -6,7 +6,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-//#include "callbackfunction.h"
 #include "renderbase.h"
 
 class RenderWidget
@@ -22,7 +21,6 @@ public:
 	void setFrameBufferSizeCallback() const;
 	void setMousePosCallback() const;
 	void setScrollCallback() const;
-
 	void setRenderObject(RenderBase* object);
 
 	// 初始化系统资源
@@ -30,11 +28,8 @@ public:
 	GLFWwindow* getWindow() const;
 	virtual void run();
 
-	static RenderWidget* get()
-	{
-		static RenderWidget* ob = new RenderWidget(800, 600, "OPenGL Widget");
-		return  ob;
-	}
+	static RenderWidget* getSingleObject();
+
 
 protected:
 	//渲染窗口 

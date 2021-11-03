@@ -10,12 +10,6 @@ public:
 	virtual void render();
 	virtual Camera* currentCamera();
 
-	static RenderBase* get()
-	{
-		static RenderBase* ob = new RenderBase;
-		return ob;
-	}
-
 protected:
 	Camera* default_camera_;
 

@@ -11,7 +11,7 @@
 // Default camera values
 const float YAW = -90.0f;        // 航偏角
 const float PITCH = 0.0f;        // 俯仰角
-const float SPEED = 0.2f;        // 移动速度
+const float SPEED = 2.5f;        // 移动速度
 const float SENSITIVITY = 0.1f;  
 const float ZOOM = 45.0f;        // 缩放 
 
@@ -19,7 +19,7 @@ class Camera
 {
 public:
 	glm::vec3 postion_;   // 相机位置
-	glm::vec3 front_;     // 朝向 ？ 
+	glm::vec3 front_;     // 朝向
 	glm::vec3 up_;        // 向上方向 
 	glm::vec3 right_;     // 向右方向
 	glm::vec3 world_up_;  // ?

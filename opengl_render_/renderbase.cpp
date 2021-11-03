@@ -4,7 +4,6 @@
 RenderBase::RenderBase()
 {
 	default_camera_ = nullptr;
-	default_camera_ = new Camera();
 }
 
 RenderBase::~RenderBase()

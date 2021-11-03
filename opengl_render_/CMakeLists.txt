@@ -1,4 +1,4 @@
-set(project_name Transformations)
+set(project_name opengl_render_)
 # 设置工程名称 
 project(${project_name})
 
@@ -38,8 +38,7 @@ SET(Sources
 )
 
 SET(shader_file 
-	# shader/transformations.vert 
-	# shader/transformations.frag
+
 )
 
 

@@ -2,19 +2,14 @@
 #include "renderwidget.h"
 #include "callbackfunction.h"
 
-// 屏蔽控制台 
-//#pragma comment(linker,"/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
-
 int main()
 {
 	// 初始化系统资源
 	RenderWidget::initialize();
 	
-	auto render_widget = RenderWidget::get();
-	glfwSetFramebufferSizeCallback(render_widget->getWindow(), frameBufferSizeCallBack);
-	glfwSetCursorPosCallback(render_widget->getWindow(), mouseCallback);
-	glfwSetScrollCallback(render_widget->getWindow(), scrollCallback);
-
+	auto render_widget = RenderWidget::getSingleObject();
+	// 设置跟新回调 
+	render_widget->setFrameBufferSizeCallback();
 
 	const auto render_base = new RenderBase;
 	render_widget->setRenderObject(render_base);

@@ -9,7 +9,7 @@ void frameBufferSizeCallBack(GLFWwindow* window, const int width, const int heig
 
 void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	auto render_widget = RenderWidget::get();
+	auto render_widget = RenderWidget::getSingleObject();
 	if (render_widget->first_mouse_)
 	{
 		render_widget->last_x_ = xpos;
@@ -18,7 +18,7 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 	}
 
 	float xoffset = xpos - render_widget->last_x_;
-	float yoffset = render_widget->last_y_ - ypos; // reversed since y-coordinates go from bottom to top
+	float yoffset = render_widget->last_y_ - ypos;
 
 	render_widget->last_x_ = xpos;
 	render_widget->last_y_ = ypos;
@@ -29,6 +29,6 @@ void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	auto render_widget = RenderWidget::get();
+	auto render_widget = RenderWidget::getSingleObject();
 	render_widget->render_->currentCamera()->processMouseScroll(yoffset);
 }

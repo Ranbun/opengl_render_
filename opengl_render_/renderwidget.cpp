@@ -1,9 +1,12 @@
 #include <cassert>
-
+#include "callbackfunction.h"
 #include "RenderWidget.h"
 
 RenderWidget::RenderWidget(const int width, const int height, std::string title)
-	:render_(nullptr)
+	:render_(nullptr),
+	first_mouse_(true),
+	last_x_(width / static_cast<float>(2.0)),
+	last_y_(height / static_cast<float>(2.0))
 {
 	window_ = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window_ == nullptr)
@@ -22,10 +25,7 @@ RenderWidget::RenderWidget(const int width, const int height, std::string title)
 	}
 	// 初始化视口大小 
 	glViewport(0, 0, 800, 600);
-	first_mouse_ = true;
-	last_x_ = width / 2;
-	last_y_ = height / 2;
-	
+
 }
 
 RenderWidget::~RenderWidget()
@@ -35,17 +35,17 @@ RenderWidget::~RenderWidget()
 
 void RenderWidget::setFrameBufferSizeCallback() const
 {
-	//glfwSetFramebufferSizeCallback(window_, frameBufferSizeCallBack);
+	glfwSetFramebufferSizeCallback(window_, frameBufferSizeCallBack);
 }
 
 void RenderWidget::setMousePosCallback() const
 {
-	//glfwSetCursorPosCallback(window_, mouseCallback);
+	glfwSetCursorPosCallback(window_, mouseCallback);
 }
 
 void RenderWidget::setScrollCallback() const
 {
-	//glfwSetScrollCallback(window_, scrollCallback);
+	glfwSetScrollCallback(window_, scrollCallback);
 }
 
 void RenderWidget::setRenderObject(RenderBase* object)
@@ -77,7 +77,7 @@ void RenderWidget::run()
 	assert(render_);
 	while (!glfwWindowShouldClose(window_))
 	{
-		float current_frame = glfwGetTime();
+		float current_frame = static_cast<float>(glfwGetTime());
 		delta_time_ = current_frame - last_frame_;
 		last_frame_ = current_frame;
 
@@ -92,6 +92,12 @@ void RenderWidget::run()
 		glfwPollEvents();
 	}
 	glfwTerminate();
+}
+
+RenderWidget* RenderWidget::getSingleObject()
+{
+	static RenderWidget object(800, 600, "OPenGL Widget");
+	return  &object;
 }
 
 void RenderWidget::processInput() const
