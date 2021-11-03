@@ -12,7 +12,7 @@
 const float YAW = -90.0f;        // 航偏角
 const float PITCH = 0.0f;        // 俯仰角
 const float SPEED = 2.5f;        // 移动速度
-const float SENSITIVITY = 0.1f;  
+const float SENSITIVITY = 0.1f;  // 灵敏度
 const float ZOOM = 45.0f;        // 缩放 
 
 class Camera
@@ -32,7 +32,7 @@ public:
 		// camera options
 	float movement_speed_;
 	float mouse_sensitivity_;   // 鼠标于欧拉角
-	float zoom_;                 // 缩放 
+	float zoom_;                // 缩放  视角 fov 
 
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),float yaw = YAW, float pitch = PITCH);
 	Camera(float posx, float posy, float posz, float upx, float upy, float upz, float yaw, float pitch);

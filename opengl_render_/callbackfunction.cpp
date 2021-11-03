@@ -10,6 +10,8 @@ void frameBufferSizeCallBack(GLFWwindow* window, const int width, const int heig
 void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	auto render_widget = RenderWidget::getSingleObject();
+
+	// 第一次被捕捉 
 	if (render_widget->first_mouse_)
 	{
 		render_widget->last_x_ = xpos;
