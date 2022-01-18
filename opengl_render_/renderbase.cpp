@@ -25,3 +25,8 @@ Camera* RenderBase::currentCamera()
 {
 	return default_camera_;
 }
+
+void RenderBase::init()
+{
+   // pass
+}

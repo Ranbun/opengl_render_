@@ -57,6 +57,8 @@ void RenderWidget::setRenderObject(RenderBase* object)
 	}
 	
 	render_ = object;
+	// 初始化渲染的资源
+	object->init();
 }
 
 void RenderWidget::initialize()

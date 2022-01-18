@@ -8,6 +8,7 @@ public:
 	RenderBase();
 	virtual ~RenderBase();
 	virtual void render();
+	virtual void init();
 	virtual Camera* currentCamera();
 
 protected:
