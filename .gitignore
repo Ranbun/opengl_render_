@@ -9,3 +9,13 @@ opengl_render_/build/
 
 opengl_render_/.vs
 opengl_render_/.vs/
+
+opengl_render_/.idea/
+opengl_render_/.idea
+
+opengl_render_/cmake-build-debug/
+opengl_render_/cmake-build-debug
+
+
+opengl_render_/out/
+opengl_render_/out
