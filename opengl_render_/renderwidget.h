@@ -30,7 +30,6 @@ public:
 
 	static RenderWidget* getSingleObject();
 
-
 protected:
 	//äÖÈ¾´°¿Ú 
 	GLFWwindow* window_;
