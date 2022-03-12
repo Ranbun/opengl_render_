@@ -1,10 +1,12 @@
 #include "callbackfunction.h"
 #include "camera.h"
+#include "renderwidget.h"
 
 void frameBufferSizeCallBack(GLFWwindow* window, const int width, const int height)
 {
 	// 重新设置视口的大小 
 	glViewport(0, 0, width, height);
+    RenderWidget::getSingleObject()->setSize(width,height);
 }
 
 void mouseCallback(GLFWwindow* window, double xpos, double ypos)

@@ -6,7 +6,8 @@ RenderWidget::RenderWidget(const int width, const int height, std::string title)
 	:render_(nullptr),
 	first_mouse_(true),
 	last_x_(width / static_cast<float>(2.0)),
-	last_y_(height / static_cast<float>(2.0))
+	last_y_(height / static_cast<float>(2.0)),
+	width_(width),height_(height)
 {
 	window_ = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window_ == nullptr)

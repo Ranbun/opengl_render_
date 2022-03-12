@@ -12,6 +12,10 @@ int main()
 	render_widget->setFrameBufferSizeCallback();
 
 	const auto render_base = new RenderBase;
+
+	// ³õÊ¼»¯
+	render_base->init();
+
 	render_widget->setRenderObject(render_base);
 	
 	render_widget->run();

@@ -30,6 +30,23 @@ public:
 
 	static RenderWidget* getSingleObject();
 
+	// …Ë÷√øÌ∏ﬂ
+	void setSize(int w,int h)
+    {
+        width_ = w;
+        height_ = h;
+    }
+
+    int getWidth()
+    {
+	    return width_;
+    }
+
+    int getHeight()
+    {
+	    return height_;
+    }
+
 protected:
 	//‰÷»æ¥∞ø⁄ 
 	GLFWwindow* window_;
@@ -42,6 +59,9 @@ protected:
 	bool first_mouse_;  // default true
 	float last_x_;
 	float last_y_;
+
+	int width_;
+	int height_;
 
 protected:
 	void processInput() const;
