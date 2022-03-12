@@ -20,8 +20,10 @@ SET(Headers
 	vertexarraybufferobject.h 
 	bufferobject.h 
 	render_en.h 
-	openg_texture.h 
+	opengl_texture.h 
 	camera.h
+	model.h
+	mesh.h
 ) 
 
 SET(Sources 
@@ -32,13 +34,16 @@ SET(Sources
 	shader.cpp 
 	vertexarraybufferobject.cpp 
 	bufferobject.cpp 
-	openg_texture.cpp
+	opengl_texture.cpp
 	stb_image.cpp 
 	camera.cpp
+	model.cpp
+	mesh.cpp
 )
 
 SET(shader_file 
-
+	shader/load_model/model_load.vert
+	shader/load_model/model_load.frag
 )
 
 
@@ -71,8 +76,9 @@ TARGET_INCLUDE_DIRECTORIES(
 
 
 SET(LINKER_LIBRARIES
-	debug     glfw3dll     optimized      glfw3dll
-	debug     glad         optimized      glad
+	debug     glfw3dll             optimized      glfw3dll
+	debug     glad                 optimized      glad
+	debug     assimp-vc142-mt      optimized      assimp-vc142-mt
 	opengl32
 )
 
