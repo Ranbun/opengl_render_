@@ -1,19 +1,21 @@
 #include "opengl_texture.h"
 
 Texture::Texture(std::string& path)
-	:data_(nullptr)
+	: init_(false)
+	, data_(nullptr)
+	, wrap_s_(GL_REPEAT)
+	, wrap_t_(GL_REPEAT)
+	, filter_min_(GL_LINEAR_MIPMAP_LINEAR)
+	, filter_mag_(GL_LINEAR)
 {
 	data_ = stbi_load(path.c_str(), &width_, &height_, &nr_channels_, 0);
 	glGenTextures(1, &texture_id_);
 
-	wrap_s_ = GL_REPEAT;
-	wrap_t_ = GL_REPEAT;
-
-	filter_min_ = GL_LINEAR_MIPMAP_LINEAR;
-	filter_mag_ = GL_LINEAR;
+	// 调用创建 -- 记录状态 
+	init_ = true;
 }
 
-Texture::~Texture()= default;
+Texture::~Texture() = default;
 
 void Texture::bindTexture() const
 {
@@ -27,7 +29,7 @@ void Texture::createTexture()
 		// 绑定到当前创建的纹理 
 		bindTexture();
 
-		if(nr_channels_ < 4)
+		if (nr_channels_ < 4)
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width_, height_, 0, GL_RGB, GL_UNSIGNED_BYTE, data_);
 		}
@@ -43,6 +45,7 @@ void Texture::createTexture()
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_min_);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_mag_);
+
 	}
 	else
 	{
@@ -77,18 +80,30 @@ void Texture::setFilterParameteri(texture::FILETER filter, unsigned int type)
 	}
 }
 
-void Texture::releaseTexture()
+void Texture::releaseTexture() const
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
+	if (init_)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
 
 void Texture::flipVerticallyImage()
 {
+	// 需要纹理被加载 -- 即照片被加载
+	if (!init_)
+		return;
+
 	stbi_set_flip_vertically_on_load(true);
 
 }
 
-unsigned Texture::textureFromFile(std::string path, std::string& directory, bool gamma)
+unsigned Texture::textureId() const
+{
+	return texture_id_;
+}
+
+unsigned Texture::textureFromFile(std::string path, std::string & directory, bool gamma)
 {
 	std::string file_name = std::string(path);
 	file_name = directory + '/' + file_name;
@@ -101,7 +116,7 @@ unsigned Texture::textureFromFile(std::string path, std::string& directory, bool
 
 	if (data)
 	{
-		GLenum format;
+		GLenum format = GL_RGB;
 		if (nr_components == 1)
 		{
 			format = GL_RED;
@@ -116,7 +131,7 @@ unsigned Texture::textureFromFile(std::string path, std::string& directory, bool
 		}
 
 		glBindTexture(GL_TEXTURE_2D, texture_id);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(format), width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -145,7 +160,7 @@ unsigned Texture::loadTexture(char const* path)
 	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
 	if (data)
 	{
-		GLenum format;
+		GLenum format = GL_RGB;
 		if (nrComponents == 1)
 			format = GL_RED;
 		else if (nrComponents == 3)
@@ -154,7 +169,7 @@ unsigned Texture::loadTexture(char const* path)
 			format = GL_RGBA;
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(format), width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

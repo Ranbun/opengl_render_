@@ -11,44 +11,39 @@
 class Texture
 {
 public:
-	explicit Texture(std::string& path);  // 读取文件 
-	~Texture();
-	// bind 
-	void bindTexture() const;
-	//create 
-	void createTexture();
+	explicit Texture(std::string& path);        // 读取文件 
+	~Texture();                                  // 析构函数 
+	void bindTexture() const;                    // bind
+	void createTexture();                        //create
 	// set wrap & filter
 	void setWarpParameteri(const texture::WRAP wrap, unsigned int type);
 	void setFilterParameteri(texture::FILETER filter, unsigned int type);
-	// release
-	void releaseTexture();
-	// 翻转图像
-	static void flipVerticallyImage();
 
-	unsigned int textureId()
-	{
-		return texture_id_;
-	}
+	void releaseTexture() const;                         // 解除当前纹理的绑定 
+	void flipVerticallyImage();                          // 翻转图像
+	unsigned int textureId() const;                      // 返回创建的纹理的ID
 
 private:
 	// 紋理的的图片信息
-	int width_;
-	int height_;
-	// 通道信息 
-	int nr_channels_;
-	// 调用create之前暂存的 图像数据 
-	unsigned char* data_;  //暂存 像素的数据
+	int width_{};               // 宽度
+	int height_{};              // 高度 
+	int nr_channels_{};         // 通道信息
 
-	// wrap 
+	bool init_;                 // 初始化当前纹理 -- 记录纹理是否被创建 
+
+	// 调用create之前暂存的 图像数据 
+	unsigned char* data_;      //暂存 像素的数据
+
+	// wrap -- 环绕方式 
 	GLuint wrap_s_;
 	GLuint wrap_t_;
 
-	// filter 
+	// filter -- 过滤
 	GLuint filter_min_;
 	GLuint filter_mag_;
 
 	// texture ID  
-	unsigned int texture_id_;
+	unsigned int texture_id_{};
 
 public:
 	// 使用 stb_image 读取一个纹理 返回纹理的ID 
