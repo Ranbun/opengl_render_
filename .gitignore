@@ -476,6 +476,3 @@ opengl_render_ -new project
 opengl_render_ project/callbackfunction.cpp
 opengl_render_ project/callbackfunction.h
 
-
-opengl_render_ project/
-opengl_render_ project
