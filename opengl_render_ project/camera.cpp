@@ -3,7 +3,7 @@
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
 	:front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(SPEED), mouse_sensitivity_(SENSITIVITY), zoom_(ZOOM)
 {
-	position_ = position;
+	postion_ = position;
 	world_up_ = up;
 	yaw_ = yaw;
 	pitch_ = pitch;
@@ -13,7 +13,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
 Camera::Camera(float posx, float posy, float posz, float upx, float upy, float upz, float yaw, float pitch)
 	: front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(SPEED), mouse_sensitivity_(SENSITIVITY), zoom_(ZOOM)
 {
-	position_ = glm::vec3(posx, posy, posz);
+	postion_ = glm::vec3(posx, posy, posz);
 	world_up_ = glm::vec3(upx, upy, upz);
 
 	yaw_ = yaw;
@@ -23,20 +23,20 @@ Camera::Camera(float posx, float posy, float posz, float upx, float upy, float u
 
 glm::mat4 Camera::getMatrix()
 {
-	return glm::lookAt(position_,position_ + front_,up_);
+	return glm::lookAt(postion_,postion_ + front_,up_);
 }
 
 void Camera::processKeyBoard(camera::Camera_Movement direction, float deltaTime)
 {
 	float velocity = movement_speed_ * deltaTime;
 	if (direction == camera::Camera_Movement::FORWARD)
-		position_ += front_ * velocity;
+		postion_ += front_ * velocity;
 	if (direction == camera::Camera_Movement::BACKWARD)
-		position_ -= front_ * velocity;
+		postion_ -= front_ * velocity;
 	if (direction == camera::Camera_Movement::LEFT)
-		position_ -= right_ * velocity;
+		postion_ -= right_ * velocity;
 	if (direction == camera::Camera_Movement::RIGHT)
-		position_ += right_ * velocity;
+		postion_ += right_ * velocity;
 }
 
 void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constrain_pitch)
@@ -70,7 +70,6 @@ void Camera::processMouseScroll(float yoffset)
 
 Camera::~Camera()
 {
-
 }
 
 // 重新计算朝向 

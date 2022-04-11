@@ -1,26 +1,11 @@
 #include <iostream>
 #include "renderwidget.h"
-#include "callbackfunction.h"
 
 int main()
 {
 	// 初始化系统资源
-	RenderWidget::initialize();
-	
-	auto render_widget = RenderWidget::getSingleObject();
-	// 设置跟新回调 
-	render_widget->setFrameBufferSizeCallback();
-
-	const auto render_base = new RenderBase;
-
-	// 初始化
-	render_base->init();
-
-	render_widget->setRenderObject(render_base);
-	
-	render_widget->run();
-
-	delete render_base;
-	
+	RenderWidget::initialize(render_widget::gl_version_major::major_3,render_widget::gl_version_minor::minor_3);
+	RenderWidget render_widget;
+	render_widget.run();
 	return 0;
 }

@@ -9,16 +9,16 @@
 // 相机 
 
 // Default camera values
-constexpr float YAW = -90.0f;        // 航偏角
-constexpr float PITCH = 0.0f;        // 俯仰角
-constexpr float SPEED = 2.5f;        // 移动速度
-constexpr float SENSITIVITY = 0.1f;  // 灵敏度
-constexpr float ZOOM = 45.0f;        // 缩放 
+const float YAW = -90.0f;        // 航偏角
+const float PITCH = 0.0f;        // 俯仰角
+const float SPEED = 2.5f;        // 移动速度
+const float SENSITIVITY = 0.1f;  // 灵敏度
+const float ZOOM = 45.0f;        // 缩放 
 
 class Camera
 {
 public:
-	glm::vec3 position_;   // 相机位置
+	glm::vec3 postion_;   // 相机位置
 	glm::vec3 front_;     // 朝向
 	glm::vec3 up_;        // 向上方向 
 	glm::vec3 right_;     // 向右方向

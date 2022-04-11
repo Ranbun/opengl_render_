@@ -29,7 +29,11 @@ public:
 	static bool read(int offset, void* data, unsigned int count);
 
 	void release() const;
+	
+
 	// void setUsagePattern(QOpenGLBuffer::UsagePattern value)
+
+
 	size_t size() const;
 
 	object_buffer::OBJECT_TYPE type();
