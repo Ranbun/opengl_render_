@@ -25,6 +25,8 @@ SET(Headers
 	camera.h
 	model.h
 	mesh.h
+	widget_attribute.h
+	ofapp.h
 ) 
 
 SET(Sources 
@@ -38,6 +40,7 @@ SET(Sources
 	camera.cpp
 	model.cpp
 	mesh.cpp
+	widget_attribute.cpp
 )
 
 SET(shader_file
