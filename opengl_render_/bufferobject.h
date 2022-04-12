@@ -2,7 +2,6 @@
 #define BUFFEROBJECT_H
 
 #include <glad/glad.h>
-
 #include "render_en.h"
 
 class BufferObject
@@ -25,7 +24,6 @@ public:
 
 	static void* map(object_buffer::OBJECT_ACCESS access);
 	static void* mapRange(unsigned int offset, unsigned int count, object_buffer::OBJECT_ACCESS_FLAGS flags);
-
 	static bool read(int offset, void* data, unsigned int count);
 
 	void release() const;

@@ -1,106 +1,108 @@
-#ifndef RENDERWIDGET_H
-#define RENDERWIDGET_H
+#ifndef _RENDERWIDGET_H_
+#define _RENDERWIDGET_H_
 
 #include <iostream>
 #include <string>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "camera.h"
+#include "widget_attribute.h"
+
+class Camera;
 
 //初始化上下文的版本 
-namespace render_widget
+namespace ogl_render
 {
-	enum class gl_version_major
+	namespace  render_widget
 	{
-		major_3 = 3,
-		major_4 = 4,
-	};
-	enum class gl_version_minor
-	{
-		minor_0 = 0,
-		minor_1 = 1,
-		minor_2 = 2,
-		minor_3 = 3,
-		minor_4 = 4,
-		minor_5 = 5,
-		minor_6 = 6,
-		minor_7 = 7,
-		minor_8 = 8,
-		minor_9 = 9
-	};
-
-	struct MousePos
-	{
-		int x_;
-		int y_;
-	};
-
-	struct  MouseCallBackData
-	{
-		MouseCallBackData()
+		enum class gl_version_major
 		{
-			pos_.x_ = 0;
-			pos_.y_ = 0;
-			first_ = true;
-		}
-
-		bool firstInput() const
+			major_3 = 3,
+			major_4 = 4,
+		};
+		enum class gl_version_minor
 		{
-			return first_;
-		}
+			minor_0 = 0,
+			minor_1 = 1,
+			minor_2 = 2,
+			minor_3 = 3,
+			minor_4 = 4,
+			minor_5 = 5,
+			minor_6 = 6,
+			minor_7 = 7,
+			minor_8 = 8,
+			minor_9 = 9
+		};
 
-		void setPos(const int x,const int y)
+		struct MousePos
 		{
-			pos_.x_ = x;
-			pos_.y_ = y;
-		}
-
-		MousePos pos_;
-		bool first_;    // 第一次响应鼠标回调
-	};
-
-	struct  CameraData
-	{
-		CameraData()
+			int x_;
+			int y_;
+		};
+		struct MouseCallBackData
 		{
-			camera_ = nullptr;
-			delta_time_ = 0;
-			last_time_ = 0;
-		}
-		~CameraData()
-		{
-			if(camera_)
+			MouseCallBackData()
 			{
-				delete camera_;
-				camera_ = nullptr;
+				pos_.x_ = 0;
+				pos_.y_ = 0;
+				first_ = true;
 			}
-		}
 
-		Camera * camera() const
+			bool firstInput() const
+			{
+				return first_;
+			}
+
+			void setPos(const int x, const int y)
+			{
+				pos_.x_ = x;
+				pos_.y_ = y;
+			}
+
+			MousePos pos_;
+			bool first_;    // 第一次响应鼠标回调
+		};
+		struct CameraData
 		{
-			return camera_;
-		}
+			CameraData()
+			{
+				camera_ = nullptr;
+				delta_time_ = 0;
+				last_time_ = 0;
+			}
+			~CameraData()
+			{
+				if (camera_)
+				{
+					delete camera_;
+					camera_ = nullptr;
+				}
+			}
 
-		Camera* camera_;
-		float delta_time_;
-		float last_time_;
-	};
+			Camera* camera() const
+			{
+				return camera_;
+			}
 
-
+			Camera* camera_;
+			float delta_time_;
+			float last_time_;
+		};
+	}
 };
 
+using namespace ogl_render;
 
-class RenderWidget
+class RenderWidget :public WidgetAttribute
 {
 public:
 	explicit RenderWidget(const int width = 800, const int height = 600, std::string title = "OpenGL Widgets");
-	~RenderWidget();
+	~RenderWidget() override;
 
 	// 初始化系统资源
 	static void initialize(render_widget::gl_version_major major, render_widget::gl_version_minor minor);
 	virtual void run();
 
-	Camera * currentCamera()  const;
+	Camera* currentCamera()  const;
 
 protected:
 	// 窗口指针
@@ -116,16 +118,10 @@ protected:
 	void setMousePosCallback() const;
 	void setScrollCallback() const;
 
-public:
-	// 窗口的宽度
-	int width()const;
-	// 窗口的高度
-	int height() const;
-
 protected:
 	// 设置宽高
-	virtual void resizeEvent(const int w, const int h);
-	virtual void mouseCursorMoveEvent(const double x,const double y);
+	void resizeEvent(const int w, const int h) override;
+	void mouseCursorMoveEvent(const double x, const double y) override;
 
 	// draw function
 	virtual void render();;
@@ -136,10 +132,7 @@ protected:
 
 private:
 	//渲染窗口
-	GLFWwindow* window_;
-	// 窗口的宽高 
-	int width_;
-	int height_;
+	// GLFWwindow* window_;
 
 protected:
 	// 鼠标回调产生的信息  
@@ -150,6 +143,9 @@ protected:
 	void processInput() const;
 	void frameTime();
 };
+
+
+
 
 
 

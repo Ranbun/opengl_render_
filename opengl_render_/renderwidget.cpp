@@ -1,36 +1,35 @@
 #include <cassert>
 #include "RenderWidget.h"
+#include "camera.h"
+#include "widget_attribute.h"
 
-RenderWidget::RenderWidget(const int width, const int height, std::string title)
-	: width_(width)
-	, height_(height)
+RenderWidget::RenderWidget(const int width, const int height, const std::string title)
+	: WidgetAttribute()
 {
-	window_ = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+	window_ = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 	if (window_ == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return;
 	}
-
+	// glfwHideWindow(window_);
+	// 绑定上下文到当前线程 
 	glfwMakeContextCurrent(window_);
-
-	// 加载函数
+	//  加载OpenGL函数
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initzlized GLAD" << std::endl;
 		return;
 	}
-
 	// 初始化视口大小 
 	glViewport(0, 0, 800, 600);
-
-	// 设置回调函数 
-	setFrameBufferSizeCallback();
-	setMousePosCallback();
-
-	//  记录当前指针到窗口
+	//  记录当前指针到窗口 -- 在回调中能拿到当前实例 
 	glfwSetWindowUserPointer(window_, this);
+
+	width_ = width;
+	height_ = height;
+	title_ = title;
 }
 
 RenderWidget::~RenderWidget()
@@ -66,11 +65,11 @@ void RenderWidget::mouseCursorPosCallback(GLFWwindow* window, const double x, co
 	// 第一次被捕捉
 	if (render_widget->mouse_.firstInput())
 	{
-		render_widget->mouse_.setPos(x,y);
+		render_widget->mouse_.setPos(x, y);
 		render_widget->mouse_.first_ = false;
 	}
 
-	auto & mouse = render_widget->mouse_;
+	auto& mouse = render_widget->mouse_;
 	const float x_offset = x - mouse.pos_.x_;
 	const float y_offset = mouse.pos_.y_ - y;
 
@@ -113,7 +112,8 @@ void RenderWidget::initialize(render_widget::gl_version_major major, render_widg
 
 void RenderWidget::run()
 {
-	// 初始化资源             s
+	// glfwShowWindow(window_);
+	// 初始化资源             
 	init();
 
 	while (!glfwWindowShouldClose(window_))
@@ -140,24 +140,14 @@ Camera* RenderWidget::currentCamera() const
 	return m_camera_.camera();
 }
 
-int RenderWidget::width() const
-{
-	return width_;
-}
-
-int RenderWidget::height() const
-{
-	return height_;
-}
-
 void RenderWidget::resizeEvent(const int w, const int h)
 {
-	width_ = w;
-	height_ = h;
+
 }
 
 void RenderWidget::mouseCursorMoveEvent(const double x, const double y)
 {
+
 }
 
 void RenderWidget::render()
