@@ -16,9 +16,7 @@ SET(LIB_PATH ${CMAKE_SOURCE_DIR}/../3rdpart/x64-windows)
 
 
 SET(Headers 
-	# callbackfunction.h
 	renderwidget.h 
-	renderbase.h  
 	shader.h 
 	vertexarraybufferobject.h 
 	bufferobject.h 
@@ -31,9 +29,7 @@ SET(Headers
 
 SET(Sources 
 	main.cpp 
-	# callbackfunction.cpp
 	renderwidget.cpp 
-	renderbase.cpp  
 	shader.cpp 
 	vertexarraybufferobject.cpp 
 	bufferobject.cpp 
