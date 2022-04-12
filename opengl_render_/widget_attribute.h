@@ -57,10 +57,14 @@ public:
 	int height() const;
 	const std::string& title();
 	void setTitle(const std::string& title);
-
+	
 protected:
 	virtual void resizeEvent(const int w, const int h) = 0;
 	virtual void mouseCursorMoveEvent(const double x, const double y) = 0;
+
+	// TODO 此处需要考虑
+	virtual void init() = 0;
+	virtual void destroy() = 0;
 
 protected:
 	GLFWwindow* window_;

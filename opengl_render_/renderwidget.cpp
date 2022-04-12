@@ -140,16 +140,6 @@ Camera* RenderWidget::currentCamera() const
 	return m_camera_.camera();
 }
 
-void RenderWidget::resizeEvent(const int w, const int h)
-{
-
-}
-
-void RenderWidget::mouseCursorMoveEvent(const double x, const double y)
-{
-
-}
-
 void RenderWidget::render()
 {
 	glClearColor(0.3f, 0.3f, 0.2f, 1.0f);

@@ -6,8 +6,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "widget_attribute.h"
-
-class Camera;
+#include "camera.h"
 
 //初始化上下文的版本 
 namespace ogl_render
@@ -119,10 +118,6 @@ protected:
 	void setScrollCallback() const;
 
 protected:
-	// 设置宽高
-	void resizeEvent(const int w, const int h) override;
-	void mouseCursorMoveEvent(const double x, const double y) override;
-
 	// draw function
 	virtual void render();;
 	// 初始化资源
