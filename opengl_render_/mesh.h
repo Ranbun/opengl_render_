@@ -20,6 +20,10 @@ namespace AssimpMesh
 
 	struct Vertex
 	{
+		Vertex()
+		{
+			
+		}
 		glm::vec3 position_;
 		glm::vec3 normal_;
 		glm::vec2 tex_coords_;

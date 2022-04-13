@@ -8,10 +8,10 @@ Model::Model(char* path, bool gamma)
 	loadModel(path);
 }
 
-void Model::draw(const Shader * shader) const
+void Model::draw(const Shader* shader) const
 {
 
-	for(auto & item: meshes_)
+	for (auto& item : meshes_)
 	{
 		item.draw(shader);
 	}
@@ -35,7 +35,7 @@ void Model::loadModel(const std::string path)
 	// 将小网格拼接 
 
 	// 加载场景失败 检查场景 以及某个标志  根节点是否为空 
-	if(!scene || scene->mFlags && AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	if (!scene || scene->mFlags && AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		std::cout << "ERROR: ASSIMP:: " << importer.GetErrorString() << std::endl;
 		return;
@@ -52,7 +52,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 {
 	// 解析当前节点
 	// 处理当前节点的网格 
-	for(auto i = 0;i < node->mNumMeshes;i++)
+	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		// Scene下的mMeshes数组储存了真正的Mesh对象
 		// 节点中的mMeshes数组保存的只是场景中网格数组的索引
@@ -62,7 +62,7 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 		meshes_.push_back(processMesh(mesh, scene));
 	}
 	// 处理当节点的子节点
-	for(auto i = 0; i < node->mNumChildren;i++)
+	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		processNode(node->mChildren[i], scene);
 	}
@@ -77,7 +77,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<unsigned int> indices;
 	std::vector<AssimpMesh::Texture> textures;
 
-	for(auto i = 0;i < mesh->mNumVertices; i++)
+	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		AssimpMesh::Vertex vertex;
 		// 添加顶点 法线 纹理坐标
@@ -117,7 +117,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 				vector.y = mesh->mBitangents[i].y;
 				vector.z = mesh->mBitangents[i].z;
 				vertex.bitangent_ = vector;
-		}
+			}
 		}
 		else
 		{
@@ -128,17 +128,17 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 
 	// 处理 索引 
-	for(auto i = 0; i < mesh->mNumFaces;i++)  // 循环处理每个面
+	for (unsigned int i = 0; i < mesh->mNumFaces; i++)  // 循环处理每个面
 	{
 		aiFace face = mesh->mFaces[i];
-		for (auto j = 0; j < face.mNumIndices;j++) // 处理每个面的索引 
+		for (uint32_t j = 0; j < face.mNumIndices; j++) // 处理每个面的索引 
 		{
 			indices.push_back(face.mIndices[j]);  // 将索引添加到数组 
 		}
 	}
 
 	// 处理材质
-	if(mesh->mMaterialIndex >= 0)
+	if (mesh->mMaterialIndex >= 0)
 	{
 		// 获取实际的材料 -- 当前网格的所有材料信息 
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -163,17 +163,17 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 std::vector<AssimpMesh::Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string type_name)
 {
 	std::vector<AssimpMesh::Texture> textures;
-	for(auto i = 0;i < mat->GetTextureCount(type);i++)  // 处理当前类型的所有材料 
+	for (uint32_t i = 0; i < mat->GetTextureCount(type); i++)  // 处理当前类型的所有材料 
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
 
 		bool skip = false;
 		// 判断当前材料是不是以及被加载过 
-		for(auto j =0; j < textures_loaded_.size();j++)
+		for (auto j = 0; j < textures_loaded_.size(); j++)
 		{
 			// 判断加载的文件是否以及被加载过 
-			if(std::strcmp(textures_loaded_[j].path_.data(),str.C_Str()) == 0)
+			if (std::strcmp(textures_loaded_[j].path_.data(), str.C_Str()) == 0)
 			{
 				textures.push_back(textures_loaded_[j]);
 				skip = true;

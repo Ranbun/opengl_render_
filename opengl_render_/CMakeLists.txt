@@ -56,7 +56,7 @@ SOURCE_GROUP("Resource Files" FILES ${shader_file})
 # 设置链接flags
 set(CMAKE_EXE_LINKER_FLAGS  /NODEFAULTLIB:"MSVCRT.lib")
 # 屏蔽掉额外的控制台 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 add_executable(${project_name} ${Headers} ${Sources} ${shader_file})
 
 # 设置 连接库目录

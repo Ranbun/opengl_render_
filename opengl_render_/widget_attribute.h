@@ -7,8 +7,7 @@
  */
 
 #include <string>
-
-class GLFWwindow;
+#include "glfw/glfw3.h"
 
 class WidgetAttribute
 {

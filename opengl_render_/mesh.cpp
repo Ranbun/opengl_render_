@@ -46,14 +46,14 @@ void Mesh::draw(const Shader * shader) const
 		}
 
 		// 设置采样器(告诉采样器当前纹理属于那个纹理单元)
-		shader->setFloat(("material." + name + number), i);
+		shader->setFloat(("material." + name + number), static_cast<float>(i));
 		// shader->setFloat((name + number), i);
 		glBindTexture(GL_TEXTURE_2D, textures_[i].id_);
 	}	// 绘制 网格
 	vao_->bind();
 
 
-	glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices_.size()), GL_UNSIGNED_INT, 0);
 	vao_->release();
 	glActiveTexture(GL_TEXTURE0);  // 激活纹理党员 0  -- 默认激活 
 }
@@ -109,7 +109,8 @@ void Mesh::setupMesh()
 	}
 
 	// 为数据分配空间  -- vbo
-	vbo_->allocate(vertices_.data(), vertices_.size() * sizeof(vertices_[0]));   
+	int size = static_cast<int>(vertices_.size()) * static_cast<int>(sizeof(vertices_[0]));
+	vbo_->allocate(vertices_.data(), size);   
 
 	// ebo
 	res = ebo_->bind();
@@ -117,7 +118,8 @@ void Mesh::setupMesh()
 	{
 		std::cout << "bind index buffer object error" << std::endl;
 	}
-	ebo_->allocate(indices_.data(), indices_.size() * sizeof(unsigned int));
+	size = static_cast<int>(indices_.size() * sizeof(unsigned int));
+	ebo_->allocate(indices_.data(), size);
 
 	// 绑定到顶点属性
 	// vertex 

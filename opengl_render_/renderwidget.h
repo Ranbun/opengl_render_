@@ -118,16 +118,17 @@ protected:
 	void setScrollCallback() const;
 
 protected:
+    // 事件函数
+    void resizeEvent(const int w,const int h) override;
+    void mouseCursorMoveEvent(const double x, const double y);
+
+protected:
 	// draw function
 	virtual void render();;
 	// 初始化资源
 	virtual void init();
 	// 释放资源
 	virtual void destroy();
-
-private:
-	//渲染窗口
-	// GLFWwindow* window_;
 
 protected:
 	// 鼠标回调产生的信息  

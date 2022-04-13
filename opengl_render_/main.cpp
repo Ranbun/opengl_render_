@@ -1,5 +1,4 @@
 #include <iostream>
-#include "renderwidget.h"
 #include "ofapp.h"
 
 int main()
@@ -9,7 +8,7 @@ int main()
 		render_widget::gl_version_minor::minor_3);
 
 	RenderApp render_widget;
-	render_widget.setTitle(std::string("hello"));
+	render_widget.setTitle(std::string("OpenGL"));
 
 	render_widget.run();
 	return 0;
