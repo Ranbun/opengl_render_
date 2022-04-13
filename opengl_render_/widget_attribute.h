@@ -6,43 +6,6 @@
  *
  */
 
-#if 0
-namespace render_widget
-{
-	namespace widget_attribute
-	{
-		struct MousePos
-		{
-			int x_;
-			int y_;
-		};
-
-		struct  MouseCallBackData
-		{
-			MouseCallBackData()
-			{
-				pos_.x_ = 0;
-				pos_.y_ = 0;
-				first_ = true;
-			}
-
-			bool firstInput() const
-			{
-				return first_;
-			}
-
-			void setPos(const int x, const int y)
-			{
-				pos_.x_ = x;
-				pos_.y_ = y;
-			}
-
-			MousePos pos_;
-			bool first_;    // 第一次响应鼠标回调
-		};
-	};
-};
-#endif 
 #include <string>
 
 class GLFWwindow;
@@ -71,10 +34,6 @@ protected:
 	int width_;
 	int height_;
 	std::string title_;
-
 };
-
-
-
 
 #endif //_WIDGET_ATTRIBUTE_H_
