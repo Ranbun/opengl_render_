@@ -1,88 +1,97 @@
 #include "camera.h"
 
 Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
-	:front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(SPEED), mouse_sensitivity_(SENSITIVITY), zoom_(ZOOM)
+    : m_position(position)
+    , m_front(glm::vec3(0.0f, 0.0f, -1.0f))
+    , m_worldUp(up)
+    , m_yaw(yaw), m_pitch(pitch)
+    , m_movementSpeed(SPEED)
+    , m_mouseSensitivity(SENSITIVITY)
+    , m_zoom(ZOOM)
 {
-	position_ = position;
-	world_up_ = up;
-	yaw_ = yaw;
-	pitch_ = pitch;
-	updateCameraVectors();
+    updateCameraVectors();
 }
 
-Camera::Camera(float posx, float posy, float posz, float upx, float upy, float upz, float yaw, float pitch)
-	: front_(glm::vec3(0.0f, 0.0f, -1.0f)), movement_speed_(SPEED), mouse_sensitivity_(SENSITIVITY), zoom_(ZOOM)
+Camera::Camera(float pos_x, float pos_y, float pos_z, float upx, float upy, float upz, float yaw, float pitch)
+    : m_position(glm::vec3(pos_x, pos_y, pos_z))
+    , m_front(glm::vec3(0.0f, 0.0f, -1.0f))
+    , m_worldUp(glm::vec3(upx, upy, upz))
+    , m_yaw(yaw)
+    , m_pitch(pitch)
+    , m_movementSpeed(SPEED)
+    , m_mouseSensitivity(SENSITIVITY)
+    , m_zoom(ZOOM)
 {
-	position_ = glm::vec3(posx, posy, posz);
-	world_up_ = glm::vec3(upx, upy, upz);
-
-	yaw_ = yaw;
-	pitch_ = pitch;
-	updateCameraVectors();
+    updateCameraVectors();
 }
 
-glm::mat4 Camera::getMatrix()
+Camera::Camera(const Camera& another)
 {
-	return glm::lookAt(position_,position_ + front_,up_);
+        
 }
 
-void Camera::processKeyBoard(camera::Camera_Movement direction, float deltaTime)
+glm::mat4 Camera::getViewMatrix() const
 {
-	float velocity = movement_speed_ * deltaTime;
-	if (direction == camera::Camera_Movement::FORWARD)
-		position_ += front_ * velocity;
-	if (direction == camera::Camera_Movement::BACKWARD)
-		position_ -= front_ * velocity;
-	if (direction == camera::Camera_Movement::LEFT)
-		position_ -= right_ * velocity;
-	if (direction == camera::Camera_Movement::RIGHT)
-		position_ += right_ * velocity;
+    return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constrain_pitch)
+void Camera::processKeyBoard(camera::Camera_Movement direction, float delta_time)
 {
-	xoffset *= mouse_sensitivity_;
-	yoffset *= mouse_sensitivity_;
-
-	yaw_ += xoffset;
-	pitch_ += yoffset;
-
-	// 限制 俯仰角的范围 
-	if (constrain_pitch)
-	{
-		if (pitch_ > 89.0f)
-			pitch_ = 89.0f;
-		if (pitch_ < -89.0f)
-			pitch_ = -89.0f;
-	}
-
-	updateCameraVectors();
+    const float velocity = m_movementSpeed * delta_time;
+    if (direction == camera::Camera_Movement::FORWARD)
+        m_position += m_front * velocity;
+    if (direction == camera::Camera_Movement::BACKWARD)
+        m_position -= m_front * velocity;
+    if (direction == camera::Camera_Movement::LEFT)
+        m_position -= m_right * velocity;
+    if (direction == camera::Camera_Movement::RIGHT)
+        m_position += m_right * velocity;
 }
 
-void Camera::processMouseScroll(float yoffset)
+void Camera::processMouseMovement(float x_offset, float y_offset, GLboolean constrain_pitch)
 {
-	zoom_ -= (float)yoffset;
-	if (zoom_ < 1.0f)
-		zoom_ = 1.0f;
-	if (zoom_ > 45.0f)
-		zoom_ = 45.0f;
+    x_offset *= m_mouseSensitivity;
+    y_offset *= m_mouseSensitivity;
+
+    m_yaw += x_offset;
+    m_pitch += y_offset;
+
+    // 限制 俯仰角的范围 
+    if (constrain_pitch)
+    {
+        if (m_pitch > 89.0f)
+            m_pitch = 89.0f;
+        if (m_pitch < -89.0f)
+            m_pitch = -89.0f;
+    }
+
+    updateCameraVectors();
 }
 
-Camera::~Camera()
+void Camera::processMouseScroll(float y_offset)
 {
+    m_zoom -= (float)y_offset;
+    if (m_zoom < 1.0f)
+        m_zoom = 1.0f;
+    if (m_zoom > 45.0f)
+        m_zoom = 45.0f;
+}
 
+float Camera::fov() const
+{
+    return m_zoom;
 }
 
 // 重新计算朝向 
 void Camera::updateCameraVectors()
 {
-	// 重新计算 相机的朝向 
-	glm::vec3 front;
-	front.x = cos(glm::radians(yaw_)) * cos(glm::radians(pitch_));
-	front.y = sin(glm::radians(pitch_));
-	front.z = sin(glm::radians(yaw_)) * cos(glm::radians(pitch_));
-	front_ = glm::normalize(front);
+    // 重新计算 相机的朝向 
+    glm::vec3 front;
+    front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    front.y = sin(glm::radians(m_pitch));
+    front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+    m_front = glm::normalize(front);
 
-	right_ = glm::normalize(glm::cross(front_, world_up_));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-	up_ = glm::normalize(glm::cross(right_, front_));
+    m_right = glm::normalize(glm::cross(m_front, m_worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+    m_up = glm::normalize(glm::cross(m_right, m_front));
 }

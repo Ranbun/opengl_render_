@@ -14,14 +14,15 @@ SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 # SET LIB PATH 
 SET(LIB_PATH ${CMAKE_SOURCE_DIR}/../3rdpart/x64-windows)
 
+# find(Qt5Widgets)
 
 SET(Headers 
 	renderwidget.h 
 	shader.h 
 	vertexarraybufferobject.h 
 	bufferobject.h 
-	render_en.h 
-	opengl_texture.h 
+	enum.h
+	texture.h 
 	camera.h
 	model.h
 	mesh.h
@@ -35,7 +36,7 @@ SET(Sources
 	shader.cpp 
 	vertexarraybufferobject.cpp 
 	bufferobject.cpp 
-	opengl_texture.cpp
+	texture.cpp
 	stb_image.cpp 
 	camera.cpp
 	model.cpp

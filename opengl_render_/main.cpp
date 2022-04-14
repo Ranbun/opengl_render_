@@ -1,11 +1,11 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include "ofapp.h"
 
 int main()
 {
-	// ³õÊ¼»¯ÏµÍ³×ÊÔ´
-	RenderApp::initialize(render_widget::gl_version_major::major_3,
-		render_widget::gl_version_minor::minor_3);
+	// ï¿½ï¿½Ê¼ï¿½ï¿½ÏµÍ³ï¿½ï¿½Ô´
+	RenderApp::initialize(renderWidget::gl_version_major::major_3,
+		renderWidget::gl_version_minor::minor_3);
 
 	RenderApp render_widget;
 	render_widget.setTitle(std::string("OpenGL"));

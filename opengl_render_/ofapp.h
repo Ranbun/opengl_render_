@@ -1,9 +1,10 @@
-#ifndef _OF_APP_H_
-#define _OF_APP_H_
+#ifndef OF_APP_H_
+#define OF_APP_H_
 
 #include "renderwidget.h"
 #include <glm/vec3.hpp>
 #include "camera.h"
+
 class RenderApp :public RenderWidget
 {
 public:
@@ -14,7 +15,7 @@ public:
 		setMousePosCallback();
 		setScrollCallback();
 
-		m_camera_.camera_ = new Camera(glm::vec3(0.0, 0.0, 3.0));
+		m_camera.camera_ = new Camera(glm::vec3(0.0, 0.0, 3.0));
 	}
 	~RenderApp() override {}
 

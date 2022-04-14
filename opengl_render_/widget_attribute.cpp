@@ -2,31 +2,31 @@
 #include <GLFW/glfw3.h>
 
 WidgetAttribute::WidgetAttribute()
-	: window_(nullptr)
-	, width_(0)
-	, height_(0)
-	, title_("Render Widget")
+	: m_window(nullptr)
+	, m_width(0)
+	, m_height(0)
+	, m_title("Render Widget")
 {
 
 }
 
 int WidgetAttribute::width() const
 {
-	return width_;
+	return m_width;
 }
 
 int WidgetAttribute::height() const
 {
-	return height_;
+	return m_height;
 }
 
 const std::string& WidgetAttribute::title()
 {
-	return title_;
+	return m_title;
 }
 
 void WidgetAttribute::setTitle(const std::string& title)
 {
-	glfwSetWindowTitle(window_, title.c_str());
-	title_ = title;
+	glfwSetWindowTitle(m_window, title.c_str());
+	m_title = title;
 }

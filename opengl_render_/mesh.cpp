@@ -94,8 +94,8 @@ void Mesh::setupMesh()
 	vao_->create();
 
 	// create vertex buffer object 
-	vbo_ = new BufferObject(object_buffer::OBJECT_TYPE::VERTEX_BUFFER);
-	ebo_ = new BufferObject(object_buffer::OBJECT_TYPE::INDEX_BUFFER);
+	vbo_ = new BufferObject(objectBuffer::OBJECT_TYPE::VERTEX_BUFFER);
+	ebo_ = new BufferObject(objectBuffer::OBJECT_TYPE::INDEX_BUFFER);
 
 	vbo_->create();
 	ebo_->create();

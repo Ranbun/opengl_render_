@@ -6,8 +6,8 @@
 RenderWidget::RenderWidget(const int width, const int height, const std::string title)
     : WidgetAttribute()
 {
-    window_ = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
-    if (window_ == nullptr)
+    m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    if (m_window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -15,7 +15,7 @@ RenderWidget::RenderWidget(const int width, const int height, const std::string 
     }
     // glfwHideWindow(window_);
     // 绑定上下文到当前线程 
-    glfwMakeContextCurrent(window_);
+    glfwMakeContextCurrent(m_window);
     //  加载OpenGL函数
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -25,11 +25,11 @@ RenderWidget::RenderWidget(const int width, const int height, const std::string 
     // 初始化视口大小 
     glViewport(0, 0, 800, 600);
     //  记录当前指针到窗口 -- 在回调中能拿到当前实例 
-    glfwSetWindowUserPointer(window_, this);
+    glfwSetWindowUserPointer(m_window, this);
 
-    width_ = width;
-    height_ = height;
-    title_ = title;
+    m_width = width;
+    m_height = height;
+    m_title = title;
 }
 
 RenderWidget::~RenderWidget()
@@ -50,8 +50,8 @@ void RenderWidget::frameBufferSizeCallBack(GLFWwindow* window, const int width, 
 
     // 获取当前窗口 
     const auto render_widget = getRenderWidget(window);
-    render_widget->width_ = width;
-    render_widget->height_ = height;
+    render_widget->m_width = width;
+    render_widget->m_height = height;
 
     // 进入事件 
     render_widget->resizeEvent(width, height);
@@ -63,17 +63,17 @@ void RenderWidget::mouseCursorPosCallback(GLFWwindow* window, const double x, co
     const auto render_widget = getRenderWidget(window);
 
     // 第一次被捕捉
-    if (render_widget->mouse_.firstInput())
+    if (render_widget->m_mouse.firstInput())
     {
-        render_widget->mouse_.setPos(static_cast<int>(x), static_cast<int>(y));
-        render_widget->mouse_.first_ = false;
+        render_widget->m_mouse.setPos(static_cast<int>(x), static_cast<int>(y));
+        render_widget->m_mouse.first_ = false;
     }
 
-    auto& mouse = render_widget->mouse_;
+    auto& mouse = render_widget->m_mouse;
     const float x_offset = static_cast<float>(x) - static_cast<float>(mouse.pos_.x_);
     const float y_offset = static_cast<float>(mouse.pos_.y_) - static_cast<float>(y);
 
-    const auto& camera = render_widget->m_camera_;
+    const auto& camera = render_widget->m_camera;
     camera.camera()->processMouseMovement(x_offset, y_offset);
     // 记录此次鼠标所在的位置
     mouse.setPos(static_cast<int>(x), static_cast<int>(y));
@@ -83,26 +83,26 @@ void RenderWidget::mouseCursorPosCallback(GLFWwindow* window, const double x, co
 void RenderWidget::scrollCallback(GLFWwindow* window, double offset_x, const double offset_y)
 {
     const auto render_widget = getRenderWidget(window);
-    const auto& camera = render_widget->m_camera_;
+    const auto& camera = render_widget->m_camera;
     camera.camera()->processMouseScroll(static_cast<float>(offset_y));
 }
 
 void RenderWidget::setFrameBufferSizeCallback() const
 {
-    glfwSetFramebufferSizeCallback(window_, frameBufferSizeCallBack);
+    glfwSetFramebufferSizeCallback(m_window, frameBufferSizeCallBack);
 }
 
 void RenderWidget::setMousePosCallback() const
 {
-    glfwSetCursorPosCallback(window_, mouseCursorPosCallback);
+    glfwSetCursorPosCallback(m_window, mouseCursorPosCallback);
 }
 
 void RenderWidget::setScrollCallback() const
 {
-    glfwSetScrollCallback(window_, scrollCallback);
+    glfwSetScrollCallback(m_window, scrollCallback);
 }
 
-void RenderWidget::initialize(render_widget::gl_version_major major, render_widget::gl_version_minor minor)
+void RenderWidget::initialize(renderWidget::gl_version_major major, renderWidget::gl_version_minor minor)
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, static_cast<int>(major));
@@ -116,7 +116,7 @@ void RenderWidget::run()
     // 初始化资源             
     init();
 
-    while (!glfwWindowShouldClose(window_))
+    while (!glfwWindowShouldClose(m_window))
     {
         frameTime();
         // 获取输入	 s
@@ -124,7 +124,7 @@ void RenderWidget::run()
         // 渲染指令 
         render();
         // 检查并调用事件 交换缓冲 
-        glfwSwapBuffers(window_);
+        glfwSwapBuffers(m_window);
         glfwPollEvents();
     }
 
@@ -136,8 +136,8 @@ void RenderWidget::run()
 
 Camera* RenderWidget::currentCamera() const
 {
-    assert(m_camera_.camera());
-    return m_camera_.camera();
+    assert(m_camera.camera());
+    return m_camera.camera();
 }
 
 void RenderWidget::render()
@@ -158,27 +158,27 @@ void RenderWidget::destroy()
 
 void RenderWidget::processInput() const
 {
-    if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(window_, true);
+        glfwSetWindowShouldClose(m_window, true);
     }
 
-    if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS)
-        currentCamera()->processKeyBoard(camera::Camera_Movement::FORWARD, m_camera_.delta_time_);
-    if (glfwGetKey(window_, GLFW_KEY_S) == GLFW_PRESS)
-        currentCamera()->processKeyBoard(camera::Camera_Movement::BACKWARD, m_camera_.delta_time_);
-    if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS)
-        currentCamera()->processKeyBoard(camera::Camera_Movement::LEFT, m_camera_.delta_time_);
-    if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS)
-        currentCamera()->processKeyBoard(camera::Camera_Movement::RIGHT, m_camera_.delta_time_);
+    if (glfwGetKey(m_window, GLFW_KEY_W) == GLFW_PRESS)
+        currentCamera()->processKeyBoard(camera::Camera_Movement::FORWARD, m_camera.delta_time_);
+    if (glfwGetKey(m_window, GLFW_KEY_S) == GLFW_PRESS)
+        currentCamera()->processKeyBoard(camera::Camera_Movement::BACKWARD, m_camera.delta_time_);
+    if (glfwGetKey(m_window, GLFW_KEY_A) == GLFW_PRESS)
+        currentCamera()->processKeyBoard(camera::Camera_Movement::LEFT, m_camera.delta_time_);
+    if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
+        currentCamera()->processKeyBoard(camera::Camera_Movement::RIGHT, m_camera.delta_time_);
 
 }
 
 void RenderWidget::frameTime()
 {	// 计算每一帧的时间
     const auto current_frame = static_cast<float>(glfwGetTime());
-    m_camera_.delta_time_ = current_frame - m_camera_.last_time_;
-    m_camera_.last_time_ = current_frame;
+    m_camera.delta_time_ = current_frame - m_camera.last_time_;
+    m_camera.last_time_ = current_frame;
 }
 
 void RenderWidget::mouseCursorMoveEvent(const double x, const double y)

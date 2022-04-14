@@ -1,15 +1,15 @@
 #ifndef MESH_H_
 #define MESH_H_
 
-#include <string>
-#include <glm/vec3.hpp>
-#include <glm/vec2.hpp>
 #include <iostream>
+#include <string>
 #include <vector>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 #include "bufferobject.h"
-#include "vertexarraybufferobject.h"
 #include "shader.h"
+#include "vertexarraybufferobject.h"
 
 #define MAX_BONE_INFLUENCE 4
 
@@ -24,19 +24,19 @@ namespace AssimpMesh
 		{
 			
 		}
-		glm::vec3 position_;
-		glm::vec3 normal_;
-		glm::vec2 tex_coords_;
+		glm::vec3 position_{};
+		glm::vec3 normal_{};
+		glm::vec2 tex_coords_{};
 
 		// 切线于副切线 
 		// tangent
-		glm::vec3 tangent_;
+		glm::vec3 tangent_{};
 		// bitangent
-		glm::vec3 bitangent_;
+		glm::vec3 bitangent_{};
 		//bone indexes which will influence this vertex
-		int m_boneids_[MAX_BONE_INFLUENCE];
+		int m_boneids_[MAX_BONE_INFLUENCE]{};
 		//weights from each bone
-		float m_weights_[MAX_BONE_INFLUENCE];
+		float m_weights_[MAX_BONE_INFLUENCE]{};
 
 	};
 

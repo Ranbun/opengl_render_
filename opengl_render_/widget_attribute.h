@@ -1,5 +1,5 @@
-#ifndef _WIDGET_ATTRIBUTE_H_
-#define _WIDGET_ATTRIBUTE_H_
+#ifndef WIDGET_ATTRIBUTE_H_
+#define WIDGET_ATTRIBUTE_H_
 
 /*
  * 记录窗口的属性 单纯用作接口
@@ -24,15 +24,11 @@ protected:
 	virtual void resizeEvent(const int w, const int h) = 0;
 	virtual void mouseCursorMoveEvent(const double x, const double y) = 0;
 
-	// TODO 此处需要考虑
-	virtual void init() = 0;
-	virtual void destroy() = 0;
-
 protected:
-	GLFWwindow* window_;
-	int width_;
-	int height_;
-	std::string title_;
+	GLFWwindow* m_window;
+	int m_width;
+	int m_height;
+	std::string m_title;
 };
 
 #endif //_WIDGET_ATTRIBUTE_H_

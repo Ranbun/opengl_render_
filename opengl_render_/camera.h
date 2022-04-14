@@ -1,12 +1,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <vector>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "render_en.h"
-#include <vector>
-// 相机 
+#include "enum.h"
 
 // Default camera values
 constexpr float YAW = -90.0f;        // 航偏角
@@ -15,37 +14,49 @@ constexpr float SPEED = 2.5f;        // 移动速度
 constexpr float SENSITIVITY = 0.1f;  // 灵敏度
 constexpr float ZOOM = 45.0f;        // 缩放 
 
+using namespace oglRender;
+
 class Camera
 {
 public:
-	glm::vec3 position_;   // 相机位置
-	glm::vec3 front_;     // 朝向
-	glm::vec3 up_;        // 向上方向 
-	glm::vec3 right_;     // 向右方向
-	glm::vec3 world_up_;  // ?
+    explicit Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f)
+        , glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
-	// 欧拉角 
-	float yaw_;
-	float pitch_;
+    explicit Camera(float pos_x, float pos_y, float pos_z, float upx, float upy, float upz, float yaw, float pitch);
 
-	// 相机的移动 
-		// camera options
-	float movement_speed_;
-	float mouse_sensitivity_;   // 鼠标于欧拉角
-	float zoom_;                // 缩放  视角 fov 
+    Camera(const Camera & another);
 
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),float yaw = YAW, float pitch = PITCH);
-	Camera(float posx, float posy, float posz, float upx, float upy, float upz, float yaw, float pitch);
+    // 键盘事件 
+    void processKeyBoard(camera::Camera_Movement direction, float delta_time);
+    void processMouseMovement(float x_offset, float y_offset, GLboolean constrain_pitch = true);
+    void processMouseScroll(float y_offset);
 
-	// 获取视图矩阵
-	glm::mat4 getMatrix();
-	// 键盘事件 
-	void processKeyBoard(camera::Camera_Movement direction, float deltaTime);
-	void processMouseMovement(float xoffset, float yoffset, GLboolean constrain_pitch = true);
-	void processMouseScroll(float yoffset);
-	~Camera();
+    // 獲取当前的视角
+    float fov() const;
+    // 获取视图矩阵
+    glm::mat4 getViewMatrix() const;
+
+    ~Camera() = default;
+
 private:
-	void updateCameraVectors();
+    void updateCameraVectors();
+
+protected:
+    glm::vec3 m_position{};    // 相机位置
+    glm::vec3 m_front{};       // 朝向
+    glm::vec3 m_up{};        // 向上方向 
+    glm::vec3 m_right{};     // 向右方向
+    glm::vec3 m_worldUp{};     // 在世界坐標軸的上方向 
+
+    // 欧拉角 
+    float m_yaw{};
+    float m_pitch{};
+
+    // 相机的移动 
+    // camera options
+    float m_movementSpeed{};
+    float m_mouseSensitivity{};   // 鼠标于欧拉角
+    float m_zoom{};               // 缩放  视角 fov 
 };
 
 
