@@ -481,3 +481,6 @@ opengl_render_ project
 
 .idea
 .idea/
+
+cmake-build-debug
+cmake-build-debug/
