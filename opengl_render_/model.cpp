@@ -1,6 +1,9 @@
 #include "model.h"
-#include "texture.h"
+
+#include <iostream>
+#include <assimp/postprocess.h>
 #include "stb_image.h"
+#include "texture.h"
 
 Model::Model(char* path, const bool gamma)
     : m_gammaCorrection(gamma)
@@ -36,7 +39,7 @@ void Model::loadModel(const std::string path)
     // 将小网格拼接 
 
     // 加载场景失败 检查场景 以及某个标志  根节点是否为空 
-    if (!scene || scene->mFlags && AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    if ((!scene || scene->mFlags) && (AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode))
     {
         std::cout << "ERROR: ASSIMP:: " << importer.GetErrorString() << std::endl;
         return;
@@ -74,23 +77,23 @@ void Model::processNode(aiNode* node, const aiScene* scene)
 // 创建 mesh 对象 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-    std::vector<AssimpMesh::Vertex> vertices;
+    std::vector<mesh::Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<AssimpMesh::Texture> textures;
+    std::vector<mesh::Texture> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
-        AssimpMesh::Vertex vertex;
+        mesh::Vertex vertex;
         // 添加顶点 法线 纹理坐标
-        vertex.position_.x = mesh->mVertices[i].x;
-        vertex.position_.y = mesh->mVertices[i].y;
-        vertex.position_.z = mesh->mVertices[i].z;
+        vertex.m_position.x = mesh->mVertices[i].x;
+        vertex.m_position.y = mesh->mVertices[i].y;
+        vertex.m_position.z = mesh->mVertices[i].z;
 
         if (mesh->HasNormals())
         {
-            vertex.normal_.x = mesh->mNormals[i].x;
-            vertex.normal_.y = mesh->mNormals[i].y;
-            vertex.normal_.z = mesh->mNormals[i].z;
+            vertex.m_normal.x = mesh->mNormals[i].x;
+            vertex.m_normal.y = mesh->mNormals[i].y;
+            vertex.m_normal.z = mesh->mNormals[i].z;
         }
 
         // 需要判断有纹理坐标吗？
@@ -101,7 +104,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
 
-            vertex.tex_coords_ = vec;
+            vertex.m_texCoords = vec;
 
             glm::vec3 vector;
 
@@ -111,18 +114,18 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
                 vector.x = mesh->mTangents[i].x;
                 vector.y = mesh->mTangents[i].y;
                 vector.z = mesh->mTangents[i].z;
-                vertex.tangent_ = vector;
+                vertex.m_tangent = vector;
 
                 // 副切线 
                 vector.x = mesh->mBitangents[i].x;
                 vector.y = mesh->mBitangents[i].y;
                 vector.z = mesh->mBitangents[i].z;
-                vertex.bitangent_ = vector;
+                vertex.m_bitangent = vector;
             }
         }
         else
         {
-            vertex.tex_coords_ = glm::vec2(0.0f, 0.0f);
+            vertex.m_texCoords = glm::vec2(0.0f, 0.0f);
         }
 
         vertices.push_back(vertex);
@@ -144,16 +147,16 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         // 获取实际的材料 -- 当前网格的所有材料信息 
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-        std::vector<AssimpMesh::Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        std::vector<mesh::Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-        std::vector<AssimpMesh::Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        std::vector<mesh::Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-        std::vector<AssimpMesh::Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        std::vector<mesh::Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
         // 4. height maps
-        std::vector<AssimpMesh::Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+        std::vector<mesh::Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
     }
 
@@ -161,9 +164,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     return Mesh(vertices, indices, textures);
 }
 
-std::vector<AssimpMesh::Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string type_name)
+std::vector<mesh::Texture> Model::loadMaterialTextures(const aiMaterial* mat, aiTextureType type, std::string type_name)
 {
-    std::vector<AssimpMesh::Texture> textures;
+    std::vector<mesh::Texture> textures;
     for (uint32_t i = 0; i < mat->GetTextureCount(type); i++)  // 处理当前类型的所有材料 
     {
         aiString str;
@@ -171,12 +174,12 @@ std::vector<AssimpMesh::Texture> Model::loadMaterialTextures(aiMaterial* mat, ai
 
         bool skip = false;
         // 判断当前材料是不是以及被加载过 
-        for (auto j = 0; j < m_texturesLoaded.size(); j++)
+        for (auto& j : m_texturesLoaded)
         {
             // 判断加载的文件是否以及被加载过 
-            if (std::strcmp(m_texturesLoaded[j].path_.data(), str.C_Str()) == 0)
+            if (std::strcmp(j.m_path.data(), str.C_Str()) == 0)
             {
-                textures.push_back(m_texturesLoaded[j]);
+                textures.push_back(j);
                 skip = true;
                 break;
             }
@@ -184,10 +187,10 @@ std::vector<AssimpMesh::Texture> Model::loadMaterialTextures(aiMaterial* mat, ai
 
         if (!skip)
         {
-            AssimpMesh::Texture texture;
-            texture.id_ = Texture::textureFromFile(str.C_Str(), m_directory);
-            texture.type_ = type_name;
-            texture.path_ = str.C_Str();
+            mesh::Texture texture;
+            texture.m_id = Texture::textureFromFile(str.C_Str(), m_directory);
+            texture.m_type = type_name;
+            texture.m_path = str.C_Str();
             textures.push_back(texture);
             m_texturesLoaded.push_back(texture);
         }

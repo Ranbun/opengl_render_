@@ -1,6 +1,7 @@
 #include "texture.h"
-
+#include "stb_image.h"
 #include <cassert>
+#include <iostream>
 
 Texture::Texture(const std::string& path)
     : m_width(0)
@@ -40,11 +41,11 @@ void Texture::createTexture()
 
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLint>(m_wrapS));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLint>(m_wrapT));
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_filterMin);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_filterMag);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(m_filterMin));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(m_filterMag));
     }
     else
     {
@@ -55,21 +56,21 @@ void Texture::createTexture()
     m_data = nullptr;
 }
 
-void Texture::setWarpParameteri(const texture::WRAP wrap, unsigned int type)
+void Texture::setWarpParameteri(const texture::wrap wrap, unsigned int type)
 {
-    if (wrap == texture::WRAP::S)
+    if (wrap == texture::wrap::s)
     {
         m_wrapS = type;
     }
-    else if (wrap == texture::WRAP::T)
+    else if (wrap == texture::wrap::t)
     {
         m_wrapT = type;
     }
 }
 
-void Texture::setFilterParameteri(texture::FILETER filter, unsigned int type)
+void Texture::setFilterParameteri(texture::fileter filter, unsigned int type)
 {
-    if (filter == texture::FILETER::MIN)
+    if (filter == texture::fileter::min)
     {
         m_filterMin = type;
     }
@@ -108,7 +109,7 @@ unsigned Texture::textureFromFile(const std::string& path, const std::string & d
 
     if (data)
     {
-        GLenum format;
+        GLenum format = GL_RGB;
         if (nrComponents == 1)
         {
             format = GL_RED;
@@ -123,7 +124,7 @@ unsigned Texture::textureFromFile(const std::string& path, const std::string & d
         }
 
         glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(format), width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -152,7 +153,7 @@ unsigned Texture::loadTexture(char const* path)
     unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
     if (data)
     {
-        GLenum format;
+        GLenum format = GL_RGB;
         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)
@@ -161,7 +162,7 @@ unsigned Texture::loadTexture(char const* path)
             format = GL_RGBA;
 
         glBindTexture(GL_TEXTURE_2D, textureId);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLint>(format), width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

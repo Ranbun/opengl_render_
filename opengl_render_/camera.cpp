@@ -25,30 +25,26 @@ Camera::Camera(float pos_x, float pos_y, float pos_z, float upx, float upy, floa
     updateCameraVectors();
 }
 
-Camera::Camera(const Camera& another)
-{
-        
-}
 
 glm::mat4 Camera::getViewMatrix() const
 {
     return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-void Camera::processKeyBoard(camera::Camera_Movement direction, float delta_time)
+void Camera::processKeyBoard(const camera_movement direction, const float delta_time)
 {
     const float velocity = m_movementSpeed * delta_time;
-    if (direction == camera::Camera_Movement::FORWARD)
+    if (direction == camera_movement::forward)
         m_position += m_front * velocity;
-    if (direction == camera::Camera_Movement::BACKWARD)
+    if (direction == camera_movement::backward)
         m_position -= m_front * velocity;
-    if (direction == camera::Camera_Movement::LEFT)
+    if (direction == camera_movement::left)
         m_position -= m_right * velocity;
-    if (direction == camera::Camera_Movement::RIGHT)
+    if (direction == camera_movement::right)
         m_position += m_right * velocity;
 }
 
-void Camera::processMouseMovement(float x_offset, float y_offset, GLboolean constrain_pitch)
+void Camera::processMouseMovement(float x_offset, float y_offset, const GLboolean constrain_pitch)
 {
     x_offset *= m_mouseSensitivity;
     y_offset *= m_mouseSensitivity;
@@ -68,9 +64,9 @@ void Camera::processMouseMovement(float x_offset, float y_offset, GLboolean cons
     updateCameraVectors();
 }
 
-void Camera::processMouseScroll(float y_offset)
+void Camera::processMouseScroll(const float y_offset)
 {
-    m_zoom -= (float)y_offset;
+    m_zoom -= y_offset;
     if (m_zoom < 1.0f)
         m_zoom = 1.0f;
     if (m_zoom > 45.0f)
@@ -80,6 +76,11 @@ void Camera::processMouseScroll(float y_offset)
 float Camera::fov() const
 {
     return m_zoom;
+}
+
+glm::vec3 Camera::position() const
+{
+    return m_position;
 }
 
 // 重新计算朝向 

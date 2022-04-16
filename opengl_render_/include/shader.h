@@ -1,26 +1,16 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
 #include <string>
-#include <glad/glad.h>
 #include <glm/glm.hpp>
+#include "enum.h"
 
-enum class SHADER_TYPE
-{
-	VERTEX_SHADER,
-	FRAGMENT_SHADER,
-	GEOMETRY_SHADER,
-	PROGRAM
-	
-};
+using namespace oglRender::shader;
 
 class Shader
 {
 public:
-	unsigned int program_; 
+	unsigned int m_program; 
 	Shader(const char* vertex_path, const char* fragment_path,const char * geometry_path = nullptr);
 	~Shader();
 	void use() const;
@@ -43,7 +33,7 @@ public:
 
 
 private:
-	static void checkCompileErrors(const unsigned int shader, const SHADER_TYPE type);
+	static void checkCompileErrors(const unsigned int shader, const shader_type type);
 };
 
 #endif 

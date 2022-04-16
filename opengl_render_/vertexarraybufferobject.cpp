@@ -14,21 +14,6 @@ VertexArrayObject::~VertexArrayObject()
     glDeleteVertexArrays(1, &m_arrayBuffer);
 }
 
-VertexArrayObject::VertexArrayObject(const VertexArrayObject& another)
-    : m_arrayBuffer(0)
-    , m_isCreate(false)
-{
-
-}
-
-VertexArrayObject::VertexArrayObject(VertexArrayObject&& another) noexcept
-    : m_arrayBuffer(another.m_arrayBuffer)
-      , m_isCreate(another.m_isCreate)
-{
-    another.m_arrayBuffer = 0;
-    another.m_isCreate = false;
-}
-
 void VertexArrayObject::bind() const
 {
     if (isCreated())
