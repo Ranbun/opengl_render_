@@ -484,3 +484,6 @@ opengl_render_ project
 
 cmake-build-debug
 cmake-build-debug/
+
+out/
+out
