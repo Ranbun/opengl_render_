@@ -453,8 +453,8 @@ FodyWeavers.xsd
 opengl_render_/out/
 opengl_render_/out
 
-3rdpart/
-3rdpart
+#3rdpart/
+#3rdpart
 
 opengl_render_/build
 opengl_render_/build/
@@ -473,3 +473,17 @@ opengl_render_/out
 
 opengl_render_ -new project/
 opengl_render_ -new project
+opengl_render_ project/callbackfunction.cpp
+opengl_render_ project/callbackfunction.h
+
+opengl_render_ project/
+opengl_render_ project
+
+.idea
+.idea/
+
+cmake-build-debug
+cmake-build-debug/
+
+out/
+out

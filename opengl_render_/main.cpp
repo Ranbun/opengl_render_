@@ -1,26 +1,14 @@
-#include <iostream>
-#include "renderwidget.h"
-#include "callbackfunction.h"
+ï»¿#include "ofapp.h"
+#include "deferredshading.h"
 
 int main()
 {
-	// ³õÊ¼»¯ÏµÍ³×ÊÔ´
-	RenderWidget::initialize();
-	
-	auto render_widget = RenderWidget::getSingleObject();
-	// ÉèÖÃ¸úĞÂ»Øµ÷ 
-	render_widget->setFrameBufferSizeCallback();
+    RenderApp::initialize(gl_version_major::major_3,
+        gl_version_minor::minor_3);
 
-	const auto render_base = new RenderBase;
+    DeferredShading renderWidget;
+    renderWidget.setTitle(std::string("OpenGL"));
 
-	// ³õÊ¼»¯
-	render_base->init();
-
-	render_widget->setRenderObject(render_base);
-	
-	render_widget->run();
-
-	delete render_base;
-	
-	return 0;
+    renderWidget.run();
+    return 0;
 }

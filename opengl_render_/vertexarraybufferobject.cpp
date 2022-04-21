@@ -1,54 +1,58 @@
 #include "vertexarraybufferobject.h"
+
+#include <cassert>
 #include <glad/glad.h>
 
 VertexArrayObject::VertexArrayObject()
+    : m_arrayBuffer(0)
+    , m_isCreate(false)
 {
-	vao_ = 0;
-	is_create_ = false;
 }
 
 VertexArrayObject::~VertexArrayObject()
 {
-	glDeleteVertexArrays(1, &vao_);
+    glDeleteVertexArrays(1, &m_arrayBuffer);
 }
 
 void VertexArrayObject::bind() const
-{	if (isCreated())
-	{
-		glBindVertexArray(vao_);
-	}
+{
+    if (isCreated())
+    {
+        glBindVertexArray(m_arrayBuffer);
+    }
 
 }
 
 bool VertexArrayObject::create()
 {
-	if (!is_create_)
-	{
-		glGenVertexArrays(1, &vao_);
-		is_create_ = true;
-	}
-	
-	return is_create_;
+    if (!m_isCreate)
+    {
+        glGenVertexArrays(1, &m_arrayBuffer);
+        m_isCreate = true;
+    }
+
+    return m_isCreate;
 }
 
 void VertexArrayObject::destroy()
 {
-	glDeleteVertexArrays(1, &vao_);
-	vao_ = 0;
-	is_create_ = false;
+    glDeleteVertexArrays(1, &m_arrayBuffer);
+    m_arrayBuffer = 0;
+    m_isCreate = false;
 }
 
 bool VertexArrayObject::isCreated() const
 {
-	return is_create_;
+    return m_isCreate;
 }
 
 unsigned int VertexArrayObject::objectId() const
 {
-	return vao_;
+    return m_arrayBuffer;
 }
 
 void VertexArrayObject::release()
 {
-	glBindVertexArray(0);
+    assert(this);
+    glBindVertexArray(0);
 }

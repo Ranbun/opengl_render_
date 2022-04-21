@@ -1,13 +1,16 @@
 #include "mesh.h"
 
-Mesh::Mesh(std::vector<AssimpMesh::Vertex> vertices, std::vector<unsigned> indices, std::vector<AssimpMesh::Texture> texture)
-	: vao_(nullptr),
-	  vbo_(nullptr),
-	  ebo_(nullptr)
+#include <iostream>
+
+Mesh::Mesh(std::vector<mesh::Vertex> vertices, std::vector<unsigned> indices, std::vector<mesh::Texture> texture)
+	: m_vao(nullptr),
+	  m_vbo(nullptr),
+	  m_ebo(nullptr)
 {
-	vertices_ = vertices;
-	indices_  = indices;
-	textures_ = texture;
+	// use std::copy
+	m_vertices = vertices;
+	m_indices  = indices;
+	m_textures = texture;
 
 	setupMesh();  // 使用传入的数据初始化网格 
 }
@@ -20,13 +23,13 @@ void Mesh::draw(const Shader * shader) const
 	unsigned int height_nr = 1;
 
 	// texture_ --> vector 记录当前网格的所有纹理 
-	for(unsigned int i =0;i < textures_.size();i++)
+	for(unsigned int i =0;i < m_textures.size();i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);  // 激活对应的纹理单元
 
 		// 获取纹理的序号 -- 用于设置给采样器 
 		std::string  number;
-		std::string name = textures_[i].type_;
+		std::string name = m_textures[i].m_type;
 
 		if(name == "texture_diffuse")
 		{
@@ -46,111 +49,93 @@ void Mesh::draw(const Shader * shader) const
 		}
 
 		// 设置采样器(告诉采样器当前纹理属于那个纹理单元)
-		shader->setFloat(("material." + name + number), i);
+		shader->setFloat(("material." + name + number), static_cast<float>(i));
 		// shader->setFloat((name + number), i);
-		glBindTexture(GL_TEXTURE_2D, textures_[i].id_);
+		glBindTexture(GL_TEXTURE_2D, m_textures[i].m_id);
 	}	// 绘制 网格
-	vao_->bind();
+	m_vao->bind();
 
 
-	glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0);
-	vao_->release();
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, 0);
+	m_vao->release();
 	glActiveTexture(GL_TEXTURE0);  // 激活纹理党员 0  -- 默认激活 
 }
 
 Mesh::~Mesh()
 {
-#if 0
-	if (vao_)
-	{
-		vao_->release();
-		vao_->destroy();
-		delete vao_;
-		vao_ = nullptr;
-	}
-
-	if (vbo_)
-	{
-		vbo_->release();
-		vbo_->destroy();
-		delete vbo_;
-		vbo_ = nullptr;
-	}
-
-	if (ebo_)
-	{
-		ebo_->release();
-		ebo_->destroy();
-		delete ebo_;
-		ebo_ = nullptr;
-	}
-#endif 
-
 }
 
 void Mesh::setupMesh()
 {
-	vao_ = new VertexArrayObject;
-	vao_->create();
+	m_vao = new VertexArrayObject;
+	m_vao->create();
 
 	// create vertex buffer object 
-	vbo_ = new BufferObject(object_buffer::OBJECT_TYPE::VERTEX_BUFFER);
-	ebo_ = new BufferObject(object_buffer::OBJECT_TYPE::INDEX_BUFFER);
+	m_vbo = new BufferObject(object_type::vertex_buffer);
+	m_ebo = new BufferObject(object_type::index_buffer);
 
-	vbo_->create();
-	ebo_->create();
+	m_vbo->create();
+	m_ebo->create();
 
-	vao_->bind();
+	m_vao->bind();
 
-	auto res = vbo_->bind();
+	auto res = m_vbo->bind();
 	if(!res)
 	{
 		std::cout << "bind vertex buffer object error" << std::endl;
 	}
 
 	// 为数据分配空间  -- vbo
-	vbo_->allocate(vertices_.data(), vertices_.size() * sizeof(vertices_[0]));   
+	int size = static_cast<int>(m_vertices.size()) * static_cast<int>(sizeof(m_vertices[0]));
+	m_vbo->allocate(m_vertices.data(), size);   					 
 
 	// ebo
-	res = ebo_->bind();
+	res = m_ebo->bind();
 	if (!res)
 	{
 		std::cout << "bind index buffer object error" << std::endl;
 	}
-	ebo_->allocate(indices_.data(), indices_.size() * sizeof(unsigned int));
+	size = static_cast<int>(m_indices.size() * sizeof(unsigned int));
+	m_ebo->allocate(m_indices.data(), size);
 
 	// 绑定到顶点属性
 	// vertex 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpMesh::Vertex), static_cast<void*>(0));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(mesh::Vertex), static_cast<void*>(nullptr));
 
 	// normal
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpMesh::Vertex), (void*)offsetof(AssimpMesh::Vertex,normal_));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(mesh::Vertex)
+		, reinterpret_cast<void*>(offsetof(mesh::Vertex, m_normal)));	// NOLINT(performance-no-int-to-ptr)
 
 	// texture d
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(AssimpMesh::Vertex), (void*)offsetof(AssimpMesh::Vertex, tex_coords_));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(mesh::Vertex)
+		, reinterpret_cast<void*>(offsetof(mesh::Vertex, m_texCoords)));  // NOLINT(performance-no-int-to-ptr)
 	// vertex tangent
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpMesh::Vertex), (void*)offsetof(AssimpMesh::Vertex, tangent_));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(mesh::Vertex)
+		, reinterpret_cast<void*>(offsetof(mesh::Vertex, m_tangent)));	 // NOLINT(performance-no-int-to-ptr)
 	// vertex bitangent
 	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpMesh::Vertex), (void*)offsetof(AssimpMesh::Vertex, bitangent_));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(mesh::Vertex)
+		, reinterpret_cast<void*>(offsetof(mesh::Vertex, m_bitangent)));   // NOLINT(performance-no-int-to-ptr)
 
 	// ids
 	glEnableVertexAttribArray(5);
-	glVertexAttribIPointer(5, 4, GL_INT, sizeof(AssimpMesh::Vertex), (void*)offsetof(AssimpMesh::Vertex, m_boneids_));
+	glVertexAttribIPointer(5, 4, GL_INT, sizeof(mesh::Vertex)
+		, reinterpret_cast<void*>(offsetof(mesh::Vertex, m_boneids)));	 // NOLINT(performance-no-int-to-ptr)
 
 	// weights
 	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(AssimpMesh::Vertex), (void*)offsetof(AssimpMesh::Vertex, m_weights_));
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(mesh::Vertex)
+		, reinterpret_cast<void*>(offsetof(mesh::Vertex, m_weights)));  // NOLINT(performance-no-int-to-ptr)
 
 	// 绑定到默认的顶点属性 
 
-	vao_->release();
+	m_vao->release();
 
-	ebo_->release();
-	vbo_->release();
+	m_ebo->release();
+	m_vbo->release();
 
 }

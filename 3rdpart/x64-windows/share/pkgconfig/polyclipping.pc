@@ -1,0 +1,13 @@
+prefix=H:/OpenSources/vcpkg/packages/polyclipping_x64-windows
+exec_prefix=H:/OpenSources/vcpkg/packages/polyclipping_x64-windows
+libdir=H:/OpenSources/vcpkg/packages/polyclipping_x64-windows/lib
+sharedlibdir=H:/OpenSources/vcpkg/packages/polyclipping_x64-windows/lib
+includedir=H:/OpenSources/vcpkg/packages/polyclipping_x64-windows/include/polyclipping
+
+Name: polyclipping
+Description: polygon clipping library
+Version: 
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lpolyclipping
+Cflags: -I${includedir}

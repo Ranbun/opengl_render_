@@ -1,123 +1,142 @@
 #include "bufferobject.h"
 
+#include <cassert>
 #include <glad/glad.h>
+#include "enum.h"
 
 BufferObject::BufferObject()
+    : m_bufferType(object_type::vertex_buffer)
+      , m_isCreate(false)
+      , m_count(0)
 {
-	buffer_type_ = object_buffer::OBJECT_TYPE::VERTEX_BUFFER;
-	object_ = 0;
-	count_ = 0;
-	is_create_ = false;
-	bufferType();
+    bufferType();
 }
 
-BufferObject::BufferObject(const object_buffer::OBJECT_TYPE type)
+BufferObject::BufferObject(const object_type type)
+    : m_bufferType(type)
+      , m_isCreate(false)
+      , m_count(0)
 {
-	buffer_type_ = type;
-	is_create_ = false;
-	count_ = 0;
-	bufferType();
+    bufferType();
 }
 
 BufferObject::~BufferObject()
 {
-	glDeleteBuffers(1, &object_);
+    glDeleteBuffers(1, &m_object);
 }
 
 void BufferObject::allocate(const void* data, const unsigned count) const
 {
-	// bind();
-	glBufferData(current_buffer_, count, data, GL_STATIC_DRAW);
-	// release();
+    glBufferData(m_currentBuffer, count, data, GL_STATIC_DRAW);
 }
 
 void BufferObject::allocate(const unsigned count)
 {
-	allocate(nullptr, count);
-	count_ = count;
+    allocate(nullptr, count);
+    m_count = count;
 }
 
 bool BufferObject::bind() const
 {
-	if (is_create_)
-	{
-		glBindBuffer(current_buffer_, object_);
-	}
-	return is_create_;
+    if (m_isCreate)
+    {
+        glBindBuffer(m_currentBuffer, m_object);
+    }
+    return m_isCreate;
 }
 
 unsigned int BufferObject::bufferId() const
 {
-	return object_;
+    return m_object;
 }
 
 bool BufferObject::create()
 {
-	glGenBuffers(1, &object_);
-	is_create_ = true;
-	return is_create_;
+    glGenBuffers(1, &m_object);
+    m_isCreate = true;
+    return m_isCreate;
 }
 
 void BufferObject::destroy()
 {
-	glDeleteBuffers(1, &object_);
-	is_create_ = false;
+    glDeleteBuffers(1, &m_object);
+    m_isCreate = false;
 }
 
 bool BufferObject::isCreate() const
 {
-	return is_create_;
+    return m_isCreate;
 }
 
-void* BufferObject::map(object_buffer::OBJECT_ACCESS access)
+void* BufferObject::map(const object_access access) const
 {
-	return nullptr;
+    GLenum mapAccess = GL_WRITE_ONLY;
+    switch (access)
+    {
+    case object_access::read_only:
+        mapAccess = GL_READ_ONLY;
+        break;
+    case object_access::write_only:
+        mapAccess = GL_WRITE_ONLY;
+        break;
+    case object_access::read_write:
+        mapAccess = GL_READ_WRITE;
+        break;
+    }
+
+    const auto dataPtr = glMapBuffer(m_currentBuffer, mapAccess);
+
+    return dataPtr;
 }
 
-void* BufferObject::mapRange(unsigned offset, unsigned count, object_buffer::OBJECT_ACCESS_FLAGS flags)
+void* BufferObject::mapRange(unsigned offset, unsigned count, object_access_flags flags)
 {
-	return nullptr;
+    assert(this);
+    return nullptr;
 }
 
 bool BufferObject::read(int offset, void* data, unsigned count)
 {
-	return false;
+    assert(this);
+    return false;
 }
 
 void BufferObject::release() const
 {
-	glBindBuffer(current_buffer_, 0);
+    glBindBuffer(m_currentBuffer, 0);
 }
 
 size_t BufferObject::size() const
 {
-	return count_;
+    return m_count;
 }
 
-object_buffer::OBJECT_TYPE BufferObject::type()
+object_type BufferObject::type() const
 {
-	return buffer_type_;
+    return m_bufferType;
 }
 
-bool BufferObject::unMap() const 
+bool BufferObject::unMap() const
 {
-	return true;
+    assert(this);
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    return true;
 }
 
-void BufferObject::write(unsigned offset, const void* data, unsigned count)
+void BufferObject::write(unsigned int offset, const void* data, unsigned count)
 {
-	
+    assert(this);
 }
 
 void BufferObject::bufferType()
 {
-	switch (buffer_type_)
-	{
-	case object_buffer::OBJECT_TYPE::INDEX_BUFFER:
-		current_buffer_ = GL_ELEMENT_ARRAY_BUFFER;
-		break;
-	case object_buffer::OBJECT_TYPE::VERTEX_BUFFER:
-		current_buffer_ = GL_ARRAY_BUFFER;
-		break;
-	}
+    switch (m_bufferType)
+    {
+    case object_type::index_buffer:
+        m_currentBuffer = GL_ELEMENT_ARRAY_BUFFER;
+        break;
+    case object_type::vertex_buffer:
+        m_currentBuffer = GL_ARRAY_BUFFER;
+        break;
+    }
 }
