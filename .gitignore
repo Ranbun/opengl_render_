@@ -487,3 +487,4 @@ cmake-build-debug/
 
 out/
 out
+CppProperties.json
