@@ -11,4 +11,5 @@ set(CMAKE_CXX_STANDARD 14)
 find_package(Qt5 REQUIRED COMPONENTS Widgets)
 
 ADD_SUBDIRECTORY(opengl_render_)
-ADD_SUBDIRECTORY(deferredshading)
+ADD_SUBDIRECTORY(example/deferredshading)
+ADD_SUBDIRECTORY(example/ssao)

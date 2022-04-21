@@ -17,20 +17,20 @@ SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/opengl_render_/lib)
 SET(3RD_LIB_PATH ${CMAKE_SOURCE_DIR}/../3rdpart/x64-windows)
 
 SET(Headers 
-	# renderwidget.h 
-	# shader.h 
-	# vertexarraybufferobject.h 
-	# bufferobject.h 
-	# enum.h
-	# texture.h 
-	# camera.h
-	# model.h
-	# mesh.h
-	# widget_attribute.h
-	# ofapp.h
-	# framebufferobject.h
-	# renderbufferobject.h
-	# deferredshading.h
+	include/renderwidget.h 
+	include/shader.h 
+	include/vertexarraybufferobject.h 
+	include/bufferobject.h 
+	include/enum.h
+	include/texture.h 
+	include/camera.h
+	include/model.h
+	include/mesh.h
+	include/widget_attribute.h
+	include/ofapp.h
+	include/framebufferobject.h
+	include/renderbufferobject.h
+	# include/deferredshading.h
 ) 
 
 
