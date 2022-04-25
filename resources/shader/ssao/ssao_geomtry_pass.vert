@@ -11,11 +11,15 @@ out vec2 TexCoords;  // 纹理坐标
 out vec3 FragPos;    // 片元的位置
 out vec3 Normal;     // 片元的法线
 
+// 我们在观察空间做几何的事情 
 void main()
 {
-    FragPos = vec3(model * vec4(aPos,1.0));
+    FragPos = vec3(view * model * vec4(aPos,1.0));
     TexCoords = aTexCoords;
-    Normal = aNormal;
+
+    // 法线矩阵
+    mat3 normalMat = transpose(inverse(mat3(view * model)));
+    Normal = normalMat * aNormal;
 
     gl_Position = projection * view * model * vec4(aPos,1.0);
 }
