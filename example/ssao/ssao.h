@@ -60,64 +60,43 @@ public:
 
     void init() override
     {
+        // 生成采样点 
+        generateRandomDataX64();
         // 创建核心的旋转向量纹理 -- 随机转动核心 
         use4X4VectorCreateTexture();
+
         createGBuffer();
         createSSAOFrameBuffer();
         createSSAOBulerFramebuffer();
+
         createShader();
         createQuad();
+        createCube();
 
+        // 加载模型
+        loadModel();
+
+        glClearColor(0.0, 0.0, 0.0, 1.0);
     }
-
-
 
     // 渲染函数 
     void render() override;
 
 protected:
+    void createCube();
     void createQuad();
+    void loadModel();
+
 
     // 生成64个采样样本
-    void generateRandomDataX64()
-    {
-        std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0);
-        std::default_random_engine generator;
-
-        for (GLuint i = 0; i < 64; ++i)
-        {
-            // 生成一个球形坐标 x[-1 1] y[-1 1] z[0 1]
-            glm::vec3 sample(
-                randomFloats(generator) * 2.0 - 1.0, // 缩放到 -1 -- 1
-                randomFloats(generator) * 2.0 - 1.0,
-                randomFloats(generator)
-            );
-
-            // 将这个位置约束到球的内部
-            sample = normalize(sample);
-            sample *= randomFloats(generator);
-
-            // 让采样点 可能的靠近片段位置 
-            GLfloat scale = static_cast<GLfloat>(i) / 64.0;
-            scale = lerp(0.1f, 1.0f, scale * scale);
-            sample *= scale;
-            m_ssaoKernel.push_back(sample);
-        }
-    }
+    void generateRandomDataX64();
 
     // 生成随机样本的旋转 
     void use4X4VectorCreateTexture();
     // 几何阶段的信息 -- 位置 法向 颜色 
     void createGBuffer();
-    void createSSAOFrameBuffer()
-    {
-        assert(this);
-    }
-
-    void createSSAOBulerFramebuffer()
-    {
-        assert(this);
-    }
+    void createSSAOFrameBuffer();
+    void createSSAOBulerFramebuffer();
 
 
 private:
@@ -138,6 +117,11 @@ private:
     Shader* m_lightPassShader{ nullptr };    // 光照阶段的shader                 
     Shader* m_bluerPassShader{ nullptr };    // 模糊边界shader                 
 
+    // quad
+    VertexArrayObject* m_cubeVao{nullptr};
+    VertexArrayObject* m_quadVao{nullptr};
+
+    Model* nanosuit;
 
 private:
     // 生成纹理 
