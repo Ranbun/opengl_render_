@@ -1,12 +1,12 @@
 set(static_lib_name render_lib)
 # 设置工程名称 
-#project(${project_name})
+project(${static_lib_name})
 
 # 设置最低的CAMKE版本
-#cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.8)
 
 # 设置C++ 的语言版本s
-#set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 14)
 
 # set target output
 # SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
@@ -30,12 +30,10 @@ SET(Headers
 	include/ofapp.h
 	include/framebufferobject.h
 	include/renderbufferobject.h
-	# include/deferredshading.h
 ) 
 
 
 SET(Sources 
-	# main.cpp 
 	renderwidget.cpp 
 	shader.cpp 
 	vertexarraybufferobject.cpp 
@@ -46,7 +44,6 @@ SET(Sources
 	model.cpp
 	mesh.cpp
 	widget_attribute.cpp
-	# deferredshading.cpp 
 )
 
 SET(shader_file

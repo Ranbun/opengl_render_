@@ -58,26 +58,7 @@ public:
 
     ~SSAO() override;
 
-    void init() override
-    {
-        // 生成采样点 
-        generateRandomDataX64();
-        // 创建核心的旋转向量纹理 -- 随机转动核心 
-        use4X4VectorCreateTexture();
-
-        createGBuffer();
-        createSSAOFrameBuffer();
-        createSSAOBulerFramebuffer();
-
-        createShader();
-        createQuad();
-        createCube();
-
-        // 加载模型
-        loadModel();
-
-        glClearColor(0.0, 0.0, 0.0, 1.0);
-    }
+    void init() override;
 
     // 渲染函数 
     void render() override;
@@ -121,7 +102,10 @@ private:
     VertexArrayObject* m_cubeVao{nullptr};
     VertexArrayObject* m_quadVao{nullptr};
 
-    Model* nanosuit;
+    Model* m_nanosuit;
+
+    glm::vec3 m_lightPos{ glm::vec3(2.0, 4.0, -2.0) };
+    glm::vec3 m_lightColor{ glm::vec3(0.2, 0.2, 0.7) };
 
 private:
     // 生成纹理 

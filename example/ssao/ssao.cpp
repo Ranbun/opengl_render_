@@ -28,6 +28,27 @@ SSAO::~SSAO()
 
 }
 
+void SSAO::init()
+{
+    // 生成采样点 
+    generateRandomDataX64();
+    // 创建核心的旋转向量纹理 -- 随机转动核心 
+    use4X4VectorCreateTexture();
+
+    createGBuffer();
+    createSSAOFrameBuffer();
+    createSSAOBulerFramebuffer();
+
+    createShader();
+    createQuad();
+    createCube();
+
+    // 加载模型
+    loadModel();
+
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+}
+
 void SSAO::createGBuffer()
 {
     // gPositionDepth - 记录点的世界坐标 & 线性深度 
@@ -47,7 +68,7 @@ void SSAO::createGBuffer()
         m_buffers[gColorTexture] = buffers[2];
 
         // init position
-        glBindBuffer(GL_TEXTURE_2D, buffers[0]);
+        glBindBuffer(GL_TEXTURE_2D, m_buffers[gPositionTexture]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width(), height(), 0, GL_RGBA, GL_FLOAT, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -70,6 +91,10 @@ void SSAO::createGBuffer()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_buffers[gColorTexture], 0);
+
+        // 告诉帧缓冲
+        GLuint attachments[3] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1,GL_COLOR_ATTACHMENT2 };
+        glDrawBuffers(3, attachments);
 
         // render buffer
         unsigned int renderbuffer;
@@ -158,13 +183,50 @@ void SSAO::render()
     m_gemotryPassShader->setMat4("projection", projection);
     m_gemotryPassShader->setMat4("view", view);
     m_gemotryPassShader->setMat4("model", model);
-    nanosuit->draw(m_gemotryPassShader);
+    m_cubeVao->bind();
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    model = glm::mat4();
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 5.0));
+    model = glm::rotate(model, -90.0f, glm::vec3(1.0, 0.0, 0.0));
+    model = glm::scale(model, glm::vec3(0.5f));
+    m_gemotryPassShader->setMat4("model", model);
+    m_nanosuit->draw(m_gemotryPassShader);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // SSAO
+    glBindFramebuffer(GL_FRAMEBUFFER, m_buffers[ssaoFrameBuffer]);
+    glClear(GL_COLOR_BUFFER_BIT);
+    m_calsSSAOPassShader->use();
+    glActiveTexture(GL_TEXTURE0);    // 使用默认的纹理单元 
+    glBindTexture(GL_TEXTURE_2D, m_buffers[ssaoColorTexture]);
+    m_quadVao->bind();
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     // light pass
-    // 开始光照阶段 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // 使用默认的帧缓冲
-    glClearColor(0.2, 0.3, 0.4, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_lightPassShader->use();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_buffers[gPositionTexture]);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_buffers[gNormalTexture]);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, m_buffers[gColorTexture]);
+    glActiveTexture(GL_TEXTURE3); // Add extra SSAO texture to lighting pass
+    glBindTexture(GL_TEXTURE_2D, m_buffers[ssaoColorTexture]);
+
+    glm::vec3 lightPosView = glm::vec3(m_camera.m_camera->getViewMatrix() * glm::vec4(m_lightPos, 1.0));
+    m_lightPassShader->setVec3("light.Position", lightPosView);
+    m_lightPassShader->setVec3("light.Color", m_lightColor);
+
+    const GLfloat constant = 1.0; // Note that we don't send this to the shader, we assume it is always 1.0 (in our case)
+    const GLfloat linear = 0.09;
+    const GLfloat quadratic = 0.032;
+    m_lightPassShader->setFloat("light.Liner", linear);
+    m_lightPassShader->setFloat("light.Quadratic", quadratic);
+
+    m_quadVao->bind();
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
 }
 
 void SSAO::createCube()
@@ -227,10 +289,10 @@ void SSAO::createCube()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3,GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), nullptr);
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,8*sizeof(GLfloat), reinterpret_cast<const void*>(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), reinterpret_cast<const void*>(3 * sizeof(GLfloat)));
 
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), reinterpret_cast<const void*>(6 * sizeof(GLfloat)));
@@ -273,7 +335,7 @@ void SSAO::createQuad()
 
 void SSAO::loadModel()
 {
-    nanosuit = new Model("./../resources/model/nanosuit/nanosuit.obj");
+    m_nanosuit = new Model("./../resources/model/nanosuit/nanosuit.obj");
 }
 
 void SSAO::generateRandomDataX64()
